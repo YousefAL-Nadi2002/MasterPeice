@@ -1,0 +1,242 @@
+/* Base Styles */
+body {
+    font-family: 'Cairo', sans-serif; /* خط عربي جميل */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    direction: rtl; /* اتجاه النص من اليمين لليسار */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #fff;
+    padding: 0px 0; /* تأكد من أن هذا هو الحشو المطلوب */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    color: #007bff;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.logo i {
+    margin-left: 5px;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin-right: 20px;
+}
+
+.nav-links li:last-child {
+    margin-right: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #007bff;
+}
+
+/* Add other general styles from your main CSS file here if any */
+/* ... */
+
+
+/* Specific styles for the Emergency Assistance page */
+
+.emergency-main {
+    padding: 40px 0;
+    background-color: #f4f4f4; /* Match body background */
+    text-align: center; /* Center the heading and description */
+}
+
+.emergency-main .container {
+    padding: 20px;
+}
+
+.emergency-main h2 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.page-description {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+/* Grid layout for service cards */
+.emergency-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    gap: 30px; /* Space between cards */
+    margin-top: 30px;
+}
+
+/* Style for individual service cards */
+.service-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.service-card:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.service-icon {
+    font-size: 3.5em; /* Size of the icon */
+    color: #007bff; /* Icon color */
+    margin-bottom: 20px;
+}
+
+.service-details h3 {
+    font-size: 1.6em;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.service-details p {
+    font-size: 1em;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.service-button {
+    display: inline-block; /* Make button clickable area reasonable */
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    font-size: 1.1em;
+}
+
+.service-button:hover {
+    background-color: #0056b3;
+}
+
+.service-button i {
+    margin-left: 8px; /* Space between text and icon */
+}
+
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+}
+
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+/* Responsive styles (Media Queries) */
+@media (max-width: 768px) {
+    /* Navbar responsive adjustments (if needed, copy from your main CSS) */
+    /* Example: */
+    .navbar .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-links li {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    /* End example responsive navbar */
+
+
+    .emergency-main h2 {
+        font-size: 2em;
+    }
+
+    .page-description {
+        font-size: 1em;
+    }
+
+    .service-card {
+        padding: 20px;
+    }
+
+    .service-icon {
+        font-size: 3em;
+        margin-bottom: 15px;
+    }
+
+    .service-details h3 {
+        font-size: 1.4em;
+    }
+
+    .service-details p {
+        font-size: 0.95em;
+        margin-bottom: 15px;
+    }
+
+    .service-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    /* Add other responsive adjustments here */
+    /* ... */
+}
+
+/* Add any other responsive styles (media queries) here */
+/* ... */
