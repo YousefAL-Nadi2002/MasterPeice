@@ -1,0 +1,17 @@
+{
+    "ar": {
+      "title": "محطات شحن السيارات الكهربائية في الأردن",
+      "find_station": "ابحث عن محطة قريبة",
+      "services": "خدماتنا",
+      "contact_us": "اتصل بنا"
+      
+    },
+    "en": {
+      "title": "Electric Car Charging Stations in Jordan",
+      "find_station": "Find a Nearby Station",
+      "services": "Our Services",
+      "contact_us": "Contact Us"
+        
+    }
+  }
+  

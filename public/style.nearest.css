@@ -1,0 +1,178 @@
+/* Base Styles */
+body {
+    font-family: 'Cairo', sans-serif; /* خط عربي جميل */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    direction: rtl; /* اتجاه النص من اليمين لليسار */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #fff;
+    padding: 0px 0; /* تأكد من أن هذا هو الحشو المطلوب */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    color: #007bff;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.logo i {
+    margin-left: 5px;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin-right: 20px;
+}
+
+.nav-links li:last-child {
+    margin-right: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #007bff;
+}
+
+/* Add other general styles from your main CSS file here if any */
+/* ... */
+
+
+/* Specific styles for the Nearest Station page layout */
+
+/* Ensure the main content area has some padding */
+.nearest-station-main .container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Style for the wrapper containing the map and info panel */
+.map-and-info-wrapper {
+    display: flex; /* Use Flexbox for layout */
+    flex-direction: column; /* Stack elements vertically by default (mobile first) */
+    gap: 20px; /* Space between map and info panel */
+    margin-top: 20px; /* Space below the heading */
+}
+
+/* Style for the map container */
+#map {
+    height: 400px; /* Adjust height as needed for mobile */
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin-bottom: 20px; -- Removed, gap handles spacing */
+}
+
+/* Style for the information panel */
+#info-panel {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    flex-grow: 1; /* Allow panel to grow */
+    width: 100%; /* Full width on small screens */
+}
+
+#info-panel h3 {
+    margin-top: 0;
+    color: #007bff;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#info-panel h4 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.2em;
+}
+
+#info-panel p {
+    margin-bottom: 8px;
+    color: #555;
+    line-height: 1.5;
+    display: flex; /* Use flex to align icon and text */
+    align-items: center;
+}
+
+#info-panel p i {
+    margin-left: 10px; /* Space between icon and text */
+    color: #007bff; /* Icon color */
+}
+
+/* Style for the location status text */
+#location-status {
+    /* margin-top: 15px; -- Already handled by gap in wrapper or margin-bottom on elements above */
+    font-size: 1.1em;
+    color: #555;
+    text-align: center; /* Ensure status text is centered */
+    width: 100%; /* Take full width */
+}
+
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 768px) {
+    .map-and-info-wrapper {
+        flex-direction: row; /* Arrange elements horizontally on larger screens */
+        align-items: flex-start; /* Align items to the top */
+    }
+
+    #map {
+        height: 600px; /* Increase map height on larger screens */
+        flex-basis: 70%; /* Map takes 70% of the width */
+        flex-shrink: 0; /* Prevent map from shrinking */
+    }
+
+    #info-panel {
+        flex-basis: 30%; /* Info panel takes 30% of the width */
+        flex-shrink: 0; /* Prevent panel from shrinking */
+        width: auto; /* Auto width based on flex-basis */
+    }
+
+    /* Adjust location status alignment on larger screens if needed */
+     #location-status {
+        text-align: right; /* Align status text to the right in the info panel */
+        margin-top: 0; /* Remove top margin if needed */
+     }
+}
+
+/* Add your footer styles here */
+/* ... */
+
+/* Add any other responsive styles (media queries) here */
+/* ... */
+

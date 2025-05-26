@@ -1,0 +1,292 @@
+
+/* Base Styles */
+body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    direction: rtl;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #fff;
+    padding: 9px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    color: #007bff;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.logo i {
+    margin-left: 5px;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin-right: 20px;
+}
+
+.nav-links li:last-child {
+    margin-right: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #007bff;
+}
+
+/* Specific styles for Accurate Location page - NEW LAYOUT */
+.location-main {
+    padding: 20px 0 40px;
+    background-color: #f4f4f4;
+}
+
+.location-main h2 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* New layout: Side-by-side container */
+.side-by-side-container {
+    display: flex;
+    flex-direction: row-reverse; /* Right-to-left layout for Arabic */
+    gap: 20px;
+    min-height: 600px;
+}
+
+/* Right side - Map Panel */
+.map-panel {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+#locationMap {
+    height: 100%;
+    min-height: 600px;
+    width: 100%;
+}
+
+/* Left side - Info Panel (contains input and results) */
+.info-panel {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-panel {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.results-panel {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.input-panel h3, .results-panel h3 {
+    margin-top: 0;
+    color: #007bff;
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group select,
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.form-group input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.calculate-button {
+    display: block;
+    width: 100%;
+    background-color: #28a745;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.calculate-button:hover {
+    background-color: #218838;
+}
+
+.results-panel p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.results-panel p strong {
+    color: #333;
+}
+
+.results-panel h4 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.results-panel p i {
+    margin-left: 10px;
+    color: #007bff;
+}
+
+.service-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+.service-button:hover {
+    background-color: #0056b3;
+}
+
+.service-button i {
+    margin-left: 8px;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+    margin-top: 20px;
+}
+
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .side-by-side-container {
+        flex-direction: column-reverse;
+    }
+
+    .info-panel {
+        width: 100%;
+    }
+
+    .map-panel {
+        min-height: 400px;
+    }
+
+    #locationMap {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 767px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .location-main h2 {
+        font-size: 1.8em;
+    }
+
+    .input-panel, .results-panel {
+        padding: 15px;
+    }
+
+    .input-panel h3, .results-panel h3 {
+        font-size: 1.2em;
+    }
+
+    .form-group select,
+    .form-group input[type="text"],
+    .form-group input[type="number"] {
+        padding: 10px;
+    }
+
+    .calculate-button {
+        padding: 10px;
+        font-size: 1em;
+    }
+}
