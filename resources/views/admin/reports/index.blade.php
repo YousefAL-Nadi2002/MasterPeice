@@ -2,324 +2,75 @@
 
 @section('content')
 <div class="container-fluid py-4">
-    <!-- تقارير سريعة -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-sm-6 mb-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">إجمالي الحجوزات</p>
-                                <h5 class="font-weight-bolder mb-0">
-                                    {{ $totalBookings }}
-                                </h5>
-                                <p class="mb-0 text-sm">
-                                    <span class="text-success me-2">
-                                        <i class="fa fa-arrow-up"></i> {{ $bookingsGrowth }}%
-                                    </span>
-                                    <span class="text-muted">مقارنة بالشهر السابق</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-3 text-end">
-                            <div class="icon icon-shape bg-primary text-white rounded-circle">
-                                <i class="fas fa-calendar-check"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6 mb-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">متوسط التقييم</p>
-                                <h5 class="font-weight-bolder mb-0">
-                                    {{ number_format($averageRating, 1) }}
-                                </h5>
-                                <p class="mb-0 text-sm">
-                                    <span class="text-muted">من {{ $totalRatings }} تقييم</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-3 text-end">
-                            <div class="icon icon-shape bg-success text-white rounded-circle">
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6 mb-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">طلبات الصيانة</p>
-                                <h5 class="font-weight-bolder mb-0">
-                                    {{ $totalMaintenance }}
-                                </h5>
-                                <p class="mb-0 text-sm">
-                                    <span class="text-warning me-2">{{ $pendingMaintenance }}</span>
-                                    <span class="text-muted">قيد الانتظار</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-3 text-end">
-                            <div class="icon icon-shape bg-warning text-white rounded-circle">
-                                <i class="fas fa-tools"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6 mb-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">المستخدمين الجدد</p>
-                                <h5 class="font-weight-bolder mb-0">
-                                    {{ $newUsers }}
-                                </h5>
-                                <p class="mb-0 text-sm">
-                                    <span class="text-success me-2">
-                                        <i class="fa fa-arrow-up"></i> {{ $usersGrowth }}%
-                                    </span>
-                                    <span class="text-muted">هذا الشهر</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-3 text-end">
-                            <div class="icon icon-shape bg-info text-white rounded-circle">
-                                <i class="fas fa-users"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <!-- تقرير الحجوزات -->
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="mb-0">تقرير الحجوزات</h6>
-                        </div>
-                        <div class="col text-end">
-                            <div class="btn-group">
-                                <button class="btn btn-outline-primary btn-sm" onclick="updateBookingsChart('daily')">
-                                    يومي
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm" onclick="updateBookingsChart('weekly')">
-                                    أسبوعي
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm" onclick="updateBookingsChart('monthly')">
-                                    شهري
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="bookingsChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- تقرير التقييمات -->
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header">
-                    <h6 class="mb-0">تقرير التقييمات</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="ratingsChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="row">
-        <!-- أداء المحطات -->
         <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="mb-0">أداء المحطات</h6>
-                        </div>
-                        <div class="col text-end">
-                            <button class="btn btn-success btn-sm" onclick="exportStationsReport()">
-                                <i class="fas fa-file-excel"></i> تصدير التقرير
-                            </button>
-                        </div>
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6>التقارير</h6>
+                        <a href="{{ route('admin.reports.create') }}" class="btn btn-primary btn-sm">
+                            إضافة تقرير جديد
+                        </a>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th>المحطة</th>
-                                    <th>الحجوزات</th>
-                                    <th>التقييم</th>
-                                    <th>المنافذ النشطة</th>
-                                    <th>طلبات الصيانة</th>
-                                    <th>معدل الإشغال</th>
-                                    <th>الأداء</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">العنوان</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">النوع</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الحالة</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">تاريخ الإنشاء</th>
+                                    <th class="text-secondary opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($stationsPerformance as $station)
+                                @foreach($reports as $report)
                                 <tr>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ $station->image ?? asset('images/default-station.png') }}" 
-                                                 class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                            <div>
-                                                <h6 class="mb-0">{{ $station->name }}</h6>
-                                                <small class="text-muted">{{ $station->location }}</small>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ $report->title }}</h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        {{ $station->total_bookings }}
-                                        <small class="text-muted d-block">
-                                            {{ $station->completed_bookings }} مكتملة
-                                        </small>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $report->type }}</p>
                                     </td>
-                                    <td>
-                                        <div class="text-warning">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <i class="fas fa-star{{ $i <= $station->average_rating ? '' : '-o' }} small"></i>
-                                            @endfor
-                                            <small class="text-muted d-block">
-                                                {{ $station->total_ratings }} تقييم
-                                            </small>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="badge badge-sm bg-gradient-{{ $report->status == 'active' ? 'success' : 'secondary' }}">
+                                            {{ $report->status }}
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">{{ $report->created_at->format('Y-m-d') }}</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="{{ route('admin.reports.edit', $report) }}" class="btn btn-link text-dark px-3 mb-0">
+                                                <i class="fas fa-pencil-alt text-dark me-2"></i>تعديل
+                                            </a>
+                                            <form action="{{ route('admin.reports.destroy', $report) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-link text-danger text-gradient px-3 mb-0" onclick="return confirm('هل أنت متأكد من حذف هذا التقرير؟')">
+                                                    <i class="far fa-trash-alt me-2"></i>حذف
+                                                </button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    <td>
-                                        {{ $station->active_ports }}/{{ $station->total_ports }}
-                                        <div class="progress" style="height: 3px;">
-                                            <div class="progress-bar bg-success" 
-                                                 style="width: {{ ($station->active_ports / $station->total_ports) * 100 }}%">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {{ $station->maintenance_requests }}
-                                        <small class="text-muted d-block">
-                                            {{ $station->pending_maintenance }} قيد الانتظار
-                                        </small>
-                                    </td>
-                                    <td>
-                                        {{ number_format($station->occupancy_rate, 1) }}%
-                                        <div class="progress" style="height: 3px;">
-                                            <div class="progress-bar bg-info" 
-                                                 style="width: {{ $station->occupancy_rate }}%">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if($station->performance_score >= 80)
-                                            <span class="badge bg-success">ممتاز</span>
-                                        @elseif($station->performance_score >= 60)
-                                            <span class="badge bg-info">جيد</span>
-                                        @elseif($station->performance_score >= 40)
-                                            <span class="badge bg-warning">متوسط</span>
-                                        @else
-                                            <span class="badge bg-danger">ضعيف</span>
-                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $reports->links() }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // رسم بياني للحجوزات
-    const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
-    const bookingsChart = new Chart(bookingsCtx, {
-        type: 'line',
-        data: {
-            labels: {!! json_encode($bookingsChart->labels) !!},
-            datasets: [{
-                label: 'الحجوزات',
-                data: {!! json_encode($bookingsChart->data) !!},
-                borderColor: '#5e72e4',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // تحديث بيانات الحجوزات
-    function updateBookingsChart(period) {
-        fetch(`/admin/reports/bookings/${period}`)
-            .then(response => response.json())
-            .then(data => {
-                bookingsChart.data.labels = data.labels;
-                bookingsChart.data.datasets[0].data = data.data;
-                bookingsChart.update();
-            });
-    }
-
-    // رسم بياني للتقييمات
-    const ratingsCtx = document.getElementById('ratingsChart').getContext('2d');
-    new Chart(ratingsCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['5 نجوم', '4 نجوم', '3 نجوم', '2 نجوم', '1 نجمة'],
-            datasets: [{
-                data: {!! json_encode($ratingsDistribution) !!},
-                backgroundColor: ['#2dce89', '#5e72e4', '#fb6340', '#ffd600', '#f5365c']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-
-    // تصدير تقرير المحطات
-    function exportStationsReport() {
-        window.location.href = '/admin/reports/stations/export';
-    }
-</script>
-@endpush
 @endsection 

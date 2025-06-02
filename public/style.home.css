@@ -25,6 +25,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .logo {
+            order: 1;
+            margin-right: 20px;
+            margin-left: 0;
+            flex-shrink: 0;
         }
 
         .logo a {
@@ -40,15 +48,43 @@
             margin-left: 5px;
         }
 
-        .nav-links {
-            list-style: none;
-            margin: 0;
+        .nav-links.main-nav-links {
+            order: 2;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0;
+            flex-grow: 1;
+            flex-shrink: 1;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links.utility-nav-links {
+            order: 3;
+            margin-left: 20px;
+            margin-right: 0;
             padding: 0;
             display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0 10px;
+            padding: 0;
+            display: flex;
+            align-items: center;
         }
 
         .nav-links li {
             margin-right: 20px;
+        }
+
+        .nav-links.main-nav-links li {
+            margin: 0 10px;
         }
 
         .nav-links li:last-child {
@@ -247,4 +283,80 @@
 
         .mute-toggle-button i {
             margin-left: 5px;
+        }
+
+        /* Style for the Download App Button */
+        .utility-nav-links .download-app-link {
+            background-color: #fff;
+            color: #000;
+            padding: 8px 15px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: inline-block;
+        }
+
+        .utility-nav-links .download-app-link:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Style for the Login/Logout Button */
+        .utility-nav-links .nav-btn {
+            background-color: #fff;
+            color: #000;
+            padding: 8px 15px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: inline-block;
+        }
+
+        .utility-nav-links .nav-btn:hover {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+
+        /* Optional: Adjust spacing for smaller screens if needed */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-wrap: wrap;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-links,
+            .nav-links.main-nav-links,
+            .nav-links.utility-nav-links {
+                margin: 10px 0;
+                width: 100%;
+                justify-content: center;
+                order: 0 !important;
+                text-align: center;
+            }
+
+            .logo {
+                margin: 10px auto;
+                order: 0 !important;
+            }
+
+            .nav-links li {
+                margin: 0 10px;
+            }
+
+            .nav-links li:last-child {
+                margin-right: 10px;
+            }
+
+            .utility-nav-links .download-app-link,
+            .utility-nav-links .nav-btn {
+                margin: 0 5px;
+            }
+
+            .utility-nav-links {
+                justify-content: center;
+            }
         }

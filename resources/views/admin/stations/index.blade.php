@@ -7,11 +7,25 @@
             <div class="card shadow">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="mb-0">إدارة المحطات</h6>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStationModal">
+                    <a href="{{ route('admin.stations.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> إضافة محطة جديدة
-                    </button>
+                    </a>
                 </div>
                 <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     <!-- فلاتر البحث -->
                     <div class="row mb-4">
                         <div class="col-md-3">
@@ -46,18 +60,21 @@
                         <table class="table align-items-center mb-0" id="stationsTable">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>الاسم</th>
                                     <th>الموقع</th>
                                     <th>المنافذ</th>
                                     <th>أنواع الشواحن</th>
                                     <th>التقييم</th>
                                     <th>الحالة</th>
+                                    <th>عدد الحجوزات</th>
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($stations as $station)
+                                @forelse(($stations ?? []) as $station)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <img src="{{ $station->image ?? asset('images/default-station.png') }}" 
@@ -78,7 +95,7 @@
                                         {{ $station->available_ports }}/{{ $station->total_ports }}
                                     </td>
                                     <td>
-                                        @foreach($station->charging_types as $type)
+                                        @foreach((array) $station->charging_types as $type)
                                             <span class="badge bg-info me-1">{{ $type }}</span>
                                         @endforeach
                                     </td>
@@ -104,23 +121,32 @@
                                         @endswitch
                                     </td>
                                     <td>
+                                        {{ $station->bookings_count ?? 0 }}
+                                    </td>
+                                    <td>
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-info" 
-                                                    onclick="viewStation({{ $station->id }})">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-primary" 
-                                                    onclick="editStation({{ $station->id }})">
+                                            <a href="{{ route('admin.stations.edit', $station) }}" 
+                                                    title="تعديل">
                                                 <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" 
-                                                    onclick="deleteStation({{ $station->id }})">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            </a>
+                                            <form action="{{ route('admin.stations.destroy', $station) }}" 
+                                                  method="POST" 
+                                                  onsubmit="return confirm('هل أنت متأكد من حذف هذه المحطة؟');"
+                                                  style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="حذف">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center">لا توجد محطات</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -131,121 +157,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal إضافة محطة -->
-<div class="modal fade" id="addStationModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">إضافة محطة جديدة</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ route('admin.stations.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">اسم المحطة</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">الصورة</label>
-                            <input type="file" class="form-control" name="image">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">خط العرض</label>
-                            <input type="number" class="form-control" name="latitude" 
-                                   step="any" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">خط الطول</label>
-                            <input type="number" class="form-control" name="longitude" 
-                                   step="any" required>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">عدد المنافذ</label>
-                            <input type="number" class="form-control" name="total_ports" 
-                                   min="1" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">الحالة</label>
-                            <select class="form-select" name="status" required>
-                                <option value="active">نشطة</option>
-                                <option value="maintenance">صيانة</option>
-                                <option value="inactive">متوقفة</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">أنواع الشواحن</label>
-                        <div class="row">
-                            @foreach($chargerTypes as $type)
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" 
-                                               name="charging_types[]" value="{{ $type }}">
-                                        <label class="form-check-label">{{ $type }}</label>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">المرافق</label>
-                        <div class="row">
-                            @foreach($amenities as $amenity)
-                                <div class="col-md-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" 
-                                               name="amenities[]" value="{{ $amenity }}">
-                                        <label class="form-check-label">{{ $amenity }}</label>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">الوصف</label>
-                        <textarea class="form-control" name="description" rows="3"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">ساعات العمل</label>
-                        @foreach(['weekdays', 'weekend'] as $day)
-                            <div class="row align-items-center mb-2">
-                                <div class="col-md-3">
-                                    <label>{{ $day == 'weekdays' ? 'أيام الأسبوع' : 'نهاية الأسبوع' }}</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="time" class="form-control" 
-                                           name="operating_hours[{{ $day }}][start]">
-                                </div>
-                                <div class="col-md-1 text-center">إلى</div>
-                                <div class="col-md-4">
-                                    <input type="time" class="form-control" 
-                                           name="operating_hours[{{ $day }}][end]">
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">حفظ المحطة</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

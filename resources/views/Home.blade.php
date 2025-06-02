@@ -13,16 +13,42 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo">
-                <a href="#">
-                    <i class="fas fa-charging-station"></i> <span>شاحنّي</span>
+                <a href="Home">
+                    <i class="fas fa-charging-station"></i> <span>شاحني</span>
                 </a>
             </div>
-            <ul class="nav-links">
+
+            {{-- Main Navigation Links (including Services) --}}
+            <ul class="nav-links main-nav-links">
                 <li><a href="#map-section">الخريطة</a></li>
-                <li><a href="#nearest-station">أقرب محطة</a></li>
+                <li><a href="nearest">أقرب محطة</a></li>
                 <li><a href="#services">خدماتنا</a></li>
                 <li><a href="#about">حول</a></li>
-                <li><a href="#contact">اتصل بنا</a></li>
+                <li><a href="content">اتصل بنا</a></li>
+            </ul>
+
+            {{-- Utility Links (Login/Logout, Download App) --}}
+            <ul class="nav-links utility-nav-links">
+                {{-- Download App Link (Placeholder) --}}
+                <li><a href="#" class="download-app-link">تنزيل التطبيق</a></li>
+
+                {{-- Login/Logout Link --}}
+                @auth
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-link nav-btn" style="color:inherit;text-decoration:none;">
+                                <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">تسجيل الخروج</span>
+                            </button>
+                        </form>
+                    </li>
+                @else
+                    <li>
+                        <a href="{{ route('login') }}" class="btn btn-link nav-btn" style="color:inherit;text-decoration:none;">
+                            <i class="fas fa-user-circle"></i> <span class="d-none d-md-inline">تسجيل الدخول</span>
+                    </a>
+                </li>
+                @endauth
             </ul>
         </div>
     </nav>
@@ -147,23 +173,13 @@
                             maxZoom: 19
                         }).addTo(map);
 
-                        const stations = [
-                            { name: "محطة وهمية عمان 1", lat: 31.9761, lng: 35.8489 },
-                            { name: "محطة وهمية عمان 2", lat: 31.9605, lng: 35.8783 },
-                            { name: "محطة وهمية عمان 3", lat: 31.9565, lng: 35.9128 },
-                            { name: "محطة وهمية اربد 1", lat: 32.55, lng: 35.85 },
-                            { name: "محطة وهمية الزرقاء 1", lat: 32.08, lng: 36.09 },
-                            { name: "محطة وهمية العقبة 1", lat: 29.53, lng: 35.00 },
-                            { name: "محطة وهمية الكرك 1", lat: 31.18, lng: 35.70 },
-                            { name: "محطة وهمية عجلون 1", lat: 32.33, lng: 35.75 },
-                            { name: "محطة وهمية مأدبا 1", lat: 31.72, lng: 35.79 },
-                            { name: "محطة وهمية المفرق 1", lat: 32.35, lng: 36.2 }
-                        ];
-
+                        const stations = @json($stations);
                         stations.forEach(station => {
-                            L.marker([station.lat, station.lng])
+                            if (station.latitude && station.longitude) {
+                                L.marker([station.latitude, station.longitude])
                                 .addTo(map)
-                                .bindPopup(station.name);
+                                    .bindPopup(station.name + (station.location ? '<br>' + station.location : ''));
+                            }
                         });
 
                         console.log('تم تهيئة الخريطة بنجاح!');

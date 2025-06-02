@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\User\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,17 +45,17 @@ Route::get('/contact', [SiteController::class, 'contact'])->name('contact');
 Route::get('/help', [SiteController::class, 'help'])->name('help');
 Route::get('/location', [SiteController::class, 'location'])->name('location');
 Route::get('/stations', [SiteController::class, 'stations'])->name('stations');
+Route::get('/stations/{station}', [SiteController::class, 'showStation'])->name('stations.show');
 Route::get('/about-us', [SiteController::class, 'aboutUs'])->name('about-us');
-Route::get('/maintenance', [SiteController::class, 'maintenance'])->name('maintenance');
-Route::get('/autoparts', function () {
-    return view('autoparts');
-})->name('auto.parts');
+Route::get('/maintenance', [\App\Http\Controllers\MaintenanceController::class, 'index'])->name('maintenance');
+Route::get('/autoparts', [\App\Http\Controllers\SparePartController::class, 'index'])->name('auto.parts');
 Route::get('/content', function () {
     return view('content');
 })->name('content');
 Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
+Route::get('/autoparts/{id}', [\App\Http\Controllers\SparePartController::class, 'show'])->name('autoparts.show');
 
 // مسارات المصادقة
 Route::middleware('guest')->group(function () {
@@ -64,52 +66,74 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('user.dashboard');
+    })->name('user.dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [SiteController::class, 'profile'])->name('profile');
     Route::put('/profile', [SiteController::class, 'updateProfile'])->name('profile.update');
     Route::get('/my-bookings', [SiteController::class, 'myBookings'])->name('my-bookings');
     Route::get('/my-maintenance-requests', [SiteController::class, 'myMaintenanceRequests'])->name('my-maintenance-requests');
+    Route::get('/settings', function () {
+        return view('user.settings');
+    })->name('settings');
 });
 
+// مسارات الحجوزات للمستخدمين
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+
 // مسارات لوحة التحكم
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
-    // لوحة التحكم
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::prefix('admin')->name('admin.')->group(function () {
+    // مسار الجذر لمجموعة المشرفين
+    Route::get('/', function () {
+        if (auth()->guard('web')->check() && auth()->user()->isAdmin()) { // Assuming you have an isAdmin() method on your User model
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('admin.login');
+        }
+    });
 
-    // المحطات
-    Route::resource('stations', AdminStationController::class, ['as' => 'admin']);
-    Route::post('stations/{station}/toggle', [AdminStationController::class, 'toggle'])->name('admin.stations.toggle');
-    Route::get('stations/{station}/ports', [AdminStationController::class, 'ports'])->name('admin.stations.ports');
-    Route::post('stations/{station}/ports', [AdminStationController::class, 'updatePorts'])->name('admin.stations.ports.update');
+    // مسارات تسجيل دخول المشرف
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminAuthController::class, 'login']);
+    });
 
-    // الحجوزات
-    Route::resource('bookings', AdminBookingController::class, ['as' => 'admin']);
-    Route::post('bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('admin.bookings.confirm');
-    Route::post('bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('admin.bookings.cancel');
-    Route::get('bookings/export', [AdminBookingController::class, 'export'])->name('admin.bookings.export');
+    // مسارات المشرف المحمية
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+        
+        // مسارات المحطات
+        Route::resource('stations', AdminStationController::class);
+        
+        // مسارات الحجوزات للمشرف
+        Route::resource('bookings', AdminBookingController::class)->names('bookings');
+        
+        // مسارات طلبات الصيانة
+        Route::resource('maintenance', AdminMaintenanceController::class)->except(['create', 'store']);
+        
+        // مسارات التقارير
+        Route::resource('reports', ReportController::class);
+        
+        // مسارات المستخدمين
+        Route::resource('users', AdminUserController::class);
 
-    // الصيانة
-    Route::resource('maintenance', AdminMaintenanceController::class, ['as' => 'admin']);
-    Route::post('maintenance/{request}/start', [AdminMaintenanceController::class, 'start'])->name('admin.maintenance.start');
-    Route::post('maintenance/{request}/complete', [AdminMaintenanceController::class, 'complete'])->name('admin.maintenance.complete');
-    Route::post('maintenance/{request}/cancel', [AdminMaintenanceController::class, 'cancel'])->name('admin.maintenance.cancel');
+        // مسارات الإعدادات
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
 
-    // المستخدمين
-    Route::resource('users', AdminUserController::class, ['as' => 'admin']);
-    Route::post('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+        // مسارات الإشعارات
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 
-    // التقارير
-    Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
-    Route::get('reports/bookings', [ReportController::class, 'bookings'])->name('admin.reports.bookings');
-    Route::get('reports/maintenance', [ReportController::class, 'maintenance'])->name('admin.reports.maintenance');
-    Route::get('reports/revenue', [ReportController::class, 'revenue'])->name('admin.reports.revenue');
+        // مسارات الخدمات
+        Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class);
 
-    // الإعدادات
-    Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
-    Route::post('settings', [SettingController::class, 'update'])->name('admin.settings.update');
+        Route::get('/profile/edit', [AdminController::class, 'editProfile'])->name('profile.edit');
+        Route::post('/profile/update', [AdminController::class, 'updateProfile'])->name('profile.update');
 
-    // الإشعارات
-    Route::get('notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
-    Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('admin.notifications.mark-all-read');
-    Route::post('notifications/{notification}/mark-read', [NotificationController::class, 'markRead'])->name('admin.notifications.mark-read');
+        // مسارات قطع الغيار
+        Route::resource('spareparts', App\Http\Controllers\Admin\SparePartController::class);
+    });
 });

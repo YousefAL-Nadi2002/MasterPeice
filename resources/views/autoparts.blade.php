@@ -531,7 +531,7 @@
             {{-- Parts List View --}}
             <div id="parts-list-view">
                 <div class="parts-grid" id="parts-grid">
-                    {{-- Part Items will be dynamically generated here by JS --}}
+                    {{-- سيتم توليد جميع العناصر عبر جافاسكريبت --}}
                 </div>
             </div>
 
@@ -643,192 +643,16 @@
             const detailWhatsapp = document.getElementById('detail-whatsapp');
             const detailEmail = document.getElementById('detail-email');
 
-            // --- Dummy Parts Data (Replace with data from backend) ---
-            // Added 'make' and 'model' properties to each part
-            const dummyPartsData = [
-                {
-                    id: 1,
-                    name: 'بطارية سيارة كهربائية',
-                    shortDescription: 'بطارية ليثيوم أيون بحالة ممتازة.',
-                    make: 'Tesla',
-                    model: 'Model 3',
-                    images: [
-                        'https://placehold.co/800x400/007bff/fff?text=صورة+بطارية+رئيسية',
-                        'https://placehold.co/100x80/007bff/fff?text=بطارية+من+الأمام',
-                        'https://placehold.co/100x80/007bff/fff?text=بطارية+من+الخلف',
-                        'https://placehold.co/100x80/007bff/fff?text=بطارية+الموصلات'
-                    ],
-                    type: 'بطارية ليثيوم أيون',
-                    condition: 'مستعملة بحالة ممتازة (تم فحصها)',
-                    compatibility: 'Tesla Model 3 (2018-2021), يمكن التوافق مع طرازات أخرى بعد التأكد.',
-                    description: 'بطارية أصلية لسيارة تسلا موديل 3، تم فحصها في مركز متخصص وأظهرت كفاءة شحن وتفريغ عالية. مناسبة كبديل أو لزيادة المدى.',
-                    price: '5000 دينار أردني (قابل للتفاوض)',
-                    sellerName: 'أحمد علي',
-                    location: 'عمان - الجاردنز',
-                    phone: '0791234567',
-                    whatsapp: '0791234567',
-                    email: 'ahmad.ali@example.com'
-                },
-                {
-                    id: 2,
-                    name: 'وحدة تحكم EV',
-                    shortDescription: 'وحدة تحكم جديدة لطراز معين.',
-                    make: 'Nissan',
-                    model: 'Leaf',
-                    images: [
-                        'https://placehold.co/800x400/28a745/fff?text=صورة+وحدة+تحكم+رئيسية',
-                        'https://placehold.co/100x80/28a745/fff?text=وحدة+تحكم+من+الأعلى',
-                        'https://placehold.co/100x80/28a745/fff?text=وحدة+تحكم+الموصلات'
-                    ],
-                    type: 'وحدة تحكم إلكترونية (ECU)',
-                    condition: 'جديدة (لم تستخدم)',
-                    compatibility: 'Nissan Leaf (2015-2017)',
-                    description: 'وحدة تحكم أصلية جديدة لسيارة نيسان ليف. تم شراؤها كقطعة غيار ولم يتم استخدامها. في علبتها الأصلية.',
-                    price: '750 دينار أردني',
-                    sellerName: 'فاطمة محمود',
-                    location: 'اربد - وسط البلد',
-                    phone: '0789876543',
-                    whatsapp: '0789876543',
-                    email: 'fatma.m@example.com'
-                },
-                 {
-                    id: 3,
-                    name: 'محرك كهربائي',
-                    shortDescription: 'محرك مستعمل بحالة جيدة.',
-                    make: 'BMW',
-                    model: 'i3',
-                    images: [
-                        'https://placehold.co/800x400/ffc107/333?text=صورة+محرك+رئيسية',
-                        'https://placehold.co/100x80/ffc107/333?text=محرك+من+الجانب',
-                        'https://placehold.co/100x80/ffc107/333?text=محرك+الموصلات'
-                    ],
-                    type: 'محرك جر كهربائي',
-                    condition: 'مستعمل بحالة جيدة (تم صيانته)',
-                    compatibility: 'BMW i3 (2014-2016)',
-                    description: 'محرك كهربائي مستعمل لسيارة بي ام دبليو i3. تم صيانته وتجديده ويعمل بكفاءة. مناسب كبديل لمحرك تالف.',
-                    price: '1200 دينار أردني',
-                    sellerName: 'محمد خالد',
-                    location: 'الزرقاء - الجديدة',
-                    phone: '0777654321',
-                    whatsapp: '0777654321',
-                    email: 'mohammad.k@example.com'
-                },
-                 {
-                    id: 4,
-                    name: 'منفذ شحن (Socket)',
-                    shortDescription: 'منفذ شحن CCS2.',
-                     make: 'Universal', // Example for parts fitting multiple cars
-                     model: 'CCS2',
-                    images: [
-                        'https://placehold.co/800x400/dc3545/fff?text=صورة+منفذ+شحن+رئيسية',
-                        'https://placehold.co/100x80/dc3545/fff?text=منفذ+شحن+من+الأمام',
-                        'https://placehold.co/100x80/dc3545/fff?text=منفذ+شحن+من+الخلف'
-                    ],
-                    type: 'منفذ شحن CCS2',
-                    condition: 'جديد',
-                    compatibility: 'متوافق مع معظم السيارات التي تستخدم منفذ CCS2',
-                    description: 'منفذ شحن CCS2 جديد وعالي الجودة. مناسب للاستبدال أو التعديل.',
-                    price: '150 دينار أردني',
-                    sellerName: 'سارة محمود',
-                    location: 'عمان - صويلح',
-                    phone: '0795551111',
-                    whatsapp: '0795551111',
-                    email: 'sara.m@example.com'
-                },
-                 {
-                    id: 5,
-                    name: 'نظام تبريد البطارية',
-                    shortDescription: 'مكونات نظام تبريد.',
-                    make: 'Hyundai',
-                    model: 'Ioniq Electric',
-                    images: [
-                        'https://placehold.co/800x400/6f42c1/fff?text=صورة+نظام+تبريد+رئيسية',
-                        'https://placehold.co/100x80/6f42c1/fff?text=مضخة+تبريد',
-                        'https://placehold.co/100x80/6f42c1/fff?text=مبرد+بطارية'
-                    ],
-                    type: 'مكونات نظام تبريد البطارية',
-                    condition: 'مستعملة بحالة جيدة',
-                    compatibility: 'Hyundai Ioniq Electric (2017-2019)',
-                    description: 'مجموعة من مكونات نظام تبريد البطارية لسيارة هيونداي ايونيك. تشمل مضخة ومبرد. تعمل بكفاءة.',
-                    price: '300 دينار أردني',
-                    sellerName: 'علي حسن',
-                    location: 'الكرك - وسط المدينة',
-                    phone: '0778882222',
-                    whatsapp: '0778882222',
-                    email: 'ali.h@example.com'
-                },
-                 {
-                    id: 6,
-                    name: 'شاحن داخلي (OBC)',
-                    shortDescription: 'شاحن داخلي 11kW.',
-                    make: 'Kia',
-                    model: 'Niro EV',
-                    images: [
-                        'https://placehold.co/800x400/20c997/fff?text=صورة+شاحن+داخلي+رئيسية',
-                        'https://placehold.co/100x80/20c997/fff?text=شاحن+داخلي+من+الجانب',
-                        'https://placehold.co/100x80/20c997/fff?text=شاحن+داخلي+الموصلات'
-                    ],
-                    type: 'شاحن داخلي (On-Board Charger)',
-                    condition: 'مستعمل بحالة ممتازة',
-                    compatibility: 'Kia Niro EV (2019-2021)',
-                    description: 'شاحن داخلي بقوة 11kW لسيارة كيا نيرو كهربائية. يعمل بشكل مثالي.',
-                    price: '600 دينار أردني',
-                    sellerName: 'ليلى فهد',
-                    location: 'العقبة - وسط المدينة',
-                    phone: '0799993333',
-                    whatsapp: '0799993333',
-                    email: 'layla.f@example.com'
-                },
-                 {
-                    id: 7,
-                    name: 'مضخة حرارة (Heat Pump)',
-                    shortDescription: 'مضخة حرارة لتدفئة وتبريد المقصورة.',
-                    make: 'Volkswagen',
-                    model: 'ID.4',
-                    images: [
-                        'https://placehold.co/800x400/fd7e14/fff?text=صورة+مضخة+حرارة',
-                        'https://placehold.co/100x80/fd7e14/fff?text=مضخة+حرارة+جانبية'
-                    ],
-                    type: 'مضخة حرارة',
-                    condition: 'جديدة',
-                    compatibility: 'Volkswagen ID.4 (2021-Present)',
-                    description: 'مضخة حرارة أصلية جديدة لسيارة فولكس فاجن ID.4. تحسن كفاءة التدفئة والتبريد وتقلل استهلاك البطارية.',
-                    price: '900 دينار أردني',
-                    sellerName: 'يوسف عادل',
-                    location: 'عمان - الدوار السابع',
-                    phone: '0770004444',
-                    whatsapp: '0770004444',
-                    email: 'yousef.a@example.com'
-                },
-                 {
-                    id: 8,
-                    name: 'وحدة إدارة البطارية (BMS)',
-                    shortDescription: 'وحدة تحكم دقيقة للبطارية.',
-                    make: 'Tesla',
-                    model: 'Model S',
-                    images: [
-                        'https://placehold.co/800x400/6610f2/fff?text=صورة+BMS',
-                        'https://placehold.co/100x80/6610f2/fff?text=BMS+الموصلات'
-                    ],
-                    type: 'وحدة إدارة البطارية (BMS)',
-                    condition: 'مستعملة بحالة ممتازة',
-                    compatibility: 'Tesla Model S (2016-2020)',
-                    description: 'وحدة BMS مستعملة بحالة ممتازة لسيارة تسلا موديل S. ضرورية لمراقبة وإدارة خلايا البطارية.',
-                    price: '1500 دينار أردني',
-                    sellerName: 'ريم خالد',
-                    location: 'اربد - شارع الجامعة',
-                    phone: '0791115555',
-                    whatsapp: '0791115555',
-                    email: 'reem.k@example.com'
-                }
-            ];
-            // --- End of Dummy Parts Data ---
+            // بيانات قطع الغيار من قاعدة البيانات (Laravel)
+            const dbParts = @json($sparePartsForJs);
+            // دمج القطع الحقيقية مع الوهمية
+            const allPartsData = dbParts;
 
-            // Store unique makes and models
-            const availableMakes = [...new Set(dummyPartsData.map(part => part.make))].sort();
-            const availableModels = {}; // Object to store models per make
+            // تحديث الفلاتر لتشمل الجميع
+            const availableMakes = [...new Set(allPartsData.map(part => part.make).filter(Boolean))].sort();
+            const availableModels = {};
             availableMakes.forEach(make => {
-                availableModels[make] = [...new Set(dummyPartsData.filter(part => part.make === make).map(part => part.model))].sort();
+                availableModels[make] = [...new Set(allPartsData.filter(part => part.make === make).map(part => part.model).filter(Boolean))].sort();
             });
 
             // Function to populate the Make dropdown
@@ -858,48 +682,58 @@
                 }
             }
 
-            // Function to render the list of parts in the grid
+            // تعديل renderPartsList ليعرض الجميع
             function renderPartsList(partsToRender) {
-                partsGrid.innerHTML = ''; // Clear current grid
-
+                partsGrid.innerHTML = '';
                 if (partsToRender.length === 0) {
                     partsGrid.innerHTML = '<p style="text-align: center; color: #555;">لا توجد قطع غيار مطابقة لمعايير التصفية.</p>';
                     return;
                 }
-
                 partsToRender.forEach(part => {
-                    const partItem = document.createElement('div');
-                    partItem.classList.add('part-item');
-                    partItem.dataset.partId = part.id; // Store part ID
-
-                    // Use the first image as the thumbnail
-                    const imageUrl = part.images && part.images.length > 0 ? part.images[0] : 'https://placehold.co/300x150/E9ECEF/343A40?text=لا+توجد+صورة';
-
-                    partItem.innerHTML = `
-                        <img src="${imageUrl}" alt="صورة ${part.name}">
-                        <h3>${part.name}</h3>
-                        <p>${part.shortDescription}</p>
-                    `;
-
-                    // Add click listener to show details
-                    partItem.addEventListener('click', function() {
-                        const partId = parseInt(this.dataset.partId);
-                        showPartDetails(partId);
-                    });
-
-                    partsGrid.appendChild(partItem);
+                    if (part.is_real) {
+                        const a = document.createElement('a');
+                        a.href = `/autoparts/${part.id}`;
+                        a.className = 'part-item';
+                        a.style.textDecoration = 'none';
+                        a.style.color = 'inherit';
+                        a.innerHTML = `
+                            <img src="${part.image}" alt="صورة ${part.name}">
+                            <h3>${part.name}</h3>
+                            <p>${part.description || ''}</p>
+                            @if(auth()->check() && auth()->user()->is_admin)
+                          
+                            @endif
+                        `;
+                        partsGrid.appendChild(a);
+                    } else {
+                        // كرت وهمي
+                        const partItem = document.createElement('div');
+                        partItem.classList.add('part-item');
+                        partItem.dataset.partId = part.id;
+                        const imageUrl = part.images && part.images.length > 0 ? part.images[0] : 'https://placehold.co/300x150/E9ECEF/343A40?text=لا+توجد+صورة';
+                        partItem.innerHTML = `
+                            <img src="${imageUrl}" alt="صورة ${part.name}">
+                            <h3>${part.name}</h3>
+                            <p>${part.shortDescription}</p>
+                        `;
+                        partItem.addEventListener('click', function() {
+                            const partId = parseInt(this.dataset.partId);
+                            showPartDetails(partId);
+                        });
+                        partsGrid.appendChild(partItem);
+                    }
                 });
             }
 
 
             // Function to display part details
             function showPartDetails(partId) {
-                const part = dummyPartsData.find(p => p.id === partId); // Find the part by ID
+                const part = allPartsData.find(p => p.id === partId); // Find the part by ID
 
                 if (part) {
                     // Populate details view with part data
                     partDetailsTitle.textContent = part.name;
-                    mainPartImage.src = part.images[0] || 'https://placehold.co/800x400/E9ECEF/343A40?text=لا+توجد+صورة'; // Set main image
+                    mainPartImage.src = part.image || 'https://placehold.co/800x400/E9ECEF/343A40?text=لا+توجد+صورة'; // Set main image
                     mainPartImage.alt = `صورة ${part.name} الرئيسية`;
 
                     // Populate gallery
@@ -949,7 +783,7 @@
                 const selectedMake = carMakeSelect.value;
                 const selectedModel = carModelSelect.value;
 
-                let filteredParts = dummyPartsData;
+                let filteredParts = allPartsData;
 
                 if (selectedMake) {
                     filteredParts = filteredParts.filter(part => part.make === selectedMake);
@@ -975,7 +809,7 @@
 
             // --- Initial Setup ---
             populateMakeDropdown(); // Populate the make dropdown on page load
-            renderPartsList(dummyPartsData); // Render the full list initially
+            renderPartsList(allPartsData); // Render the full list initially
 
             // Add click listener to the back button
             backToListButton.addEventListener('click', function() {

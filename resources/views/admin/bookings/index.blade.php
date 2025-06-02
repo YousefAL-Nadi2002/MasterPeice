@@ -66,7 +66,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($bookings as $booking)
+                                @forelse($bookings as $booking)
                                 <tr>
                                     <td>
                                         <span class="text-primary">#{{ $booking->id }}</span>
@@ -132,7 +132,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center">لا توجد حجوزات</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

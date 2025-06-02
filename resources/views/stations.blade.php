@@ -385,9 +385,29 @@
                      </div>
 
 
-                    {{-- Booking Button (Optional - if booking is implemented) --}}
-                    {{-- Link to booking page or open a booking modal --}}
-                    <a href="#" class="booking-button">حجز موعد في هذه المحطة <i class="fas fa-calendar-check"></i></a>
+                    {{-- Booking Form --}}
+                    <form action="{{ route('bookings.store') }}" method="POST">
+                        @csrf
+                        {{-- Hidden input for station ID --}}
+                        <input type="hidden" name="station_id" value="{{ $station->id }}">
+
+                        {{-- Date, Time, and Duration Selection --}}
+                        <div class="form-group">
+                            <label for="booking_date">تاريخ الحجز المطلوب:</label>
+                            <input type="date" id="booking_date" name="date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="booking_time">وقت الحجز المطلوب:</label>
+                            <input type="time" id="booking_time" name="time" class="form-control" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="booking_duration">مدة الحجز (بالساعات):</label>
+                            <input type="number" id="booking_duration" name="estimated_duration" class="form-control" min="1" value="1" required>
+                        </div>
+
+                        {{-- Booking Button --}}
+                        <button type="submit" class="booking-button">حجز موعد في هذه المحطة <i class="fas fa-calendar-check"></i></button>
+                    </form>
 
                 </div>
             </div>

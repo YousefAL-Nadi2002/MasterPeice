@@ -3,88 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - شاحنّي</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+    <title>@yield('title', 'لوحة التحكم') - {{ config('app.name') }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .sidebar {
             min-height: 100vh;
-            background-color: #343a40;
-            padding-top: 20px;
-            position: fixed;
-            width: inherit;
             display: flex;
             flex-direction: column;
         }
-        .sidebar a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 15px;
-            display: block;
-            transition: all 0.3s ease;
+        .sidebar {
+            min-height: 100vh;
+            background-color: #1e293b !important;
+            padding-top: 1rem;
         }
-        .sidebar a:hover {
-            background-color: #495057;
-            padding-right: 20px;
+        .sidebar .nav-link,
+        .sidebar .nav-link i {
+            color: #f3f4f6 !important;
         }
-        .sidebar a.active {
-            background-color: #0d6efd;
-            border-right: 4px solid #fff;
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            color: #fff !important;
+            background-color: rgba(255,255,255,0.08) !important;
         }
         .main-content {
-            margin-right: 16.666667%;
-            padding: 20px;
+            flex: 1;
+            padding: 2rem;
+            background-color: #f8f9fa !important;
         }
-        .stats-card {
+        .navbar {
             background-color: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
-        .stats-card:hover {
-            transform: translateY(-5px);
+        .navbar-brand img {
+            height: 40px;
         }
-        .stats-card h2 {
-            color: #0d6efd;
-            margin-bottom: 10px;
+        .user-dropdown img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
         }
-        .table th {
-            font-weight: 600;
-        }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid rgba(0,0,0,0.125);
-            padding: 15px 20px;
-        }
-        .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-        }
-        .search-box {
-            margin-bottom: 20px;
-        }
-        .btn-action {
-            padding: 5px 10px;
-            margin: 0 2px;
-        }
-        .logout-link {
-            margin-top: auto;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
+        .card.bg-dark {
+            background-color: #243447 !important;
+            color: #f3f4f6 !important;
+            border: none;
         }
     </style>
     @stack('styles')
@@ -93,75 +55,93 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
-                <h4 class="text-white text-center mb-4">لوحة التحكم</h4>
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="bi bi-speedometer2"></i> الرئيسية
-                </a>
-                <a href="{{ route('admin.stations.index') }}" class="{{ request()->routeIs('admin.stations.*') ? 'active' : '' }}">
-                    <i class="bi bi-ev-station"></i> المحطات
-                </a>
-                <a href="{{ route('admin.bookings.index') }}" class="{{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
-                    <i class="bi bi-calendar-check"></i> الحجوزات
-                </a>
-                <a href="{{ route('admin.maintenance.index') }}" class="{{ request()->routeIs('admin.maintenance.*') ? 'active' : '' }}">
-                    <i class="bi bi-tools"></i> الصيانة
-                </a>
-                <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <i class="bi bi-people"></i> المستخدمين
-                </a>
-                <a href="javascript:void(0)" onclick="logout()" class="logout-link">
-                    <i class="bi bi-box-arrow-right"></i> تسجيل الخروج
-                </a>
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky">
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('images/logo-shahni.png') }}" alt="" class="img-fluid" style="max-width: 150px;">
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                                <i class="fas fa-tachometer-alt"></i>
+                                لوحة التحكم
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.stations.*') ? 'active' : '' }}" href="{{ route('admin.stations.index') }}">
+                                <i class="fas fa-charging-station"></i>
+                                المحطات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.maintenance.*') ? 'active' : '' }}" href="{{ route('admin.maintenance.index') }}">
+                                <i class="fas fa-tools"></i>
+                                طلبات الصيانة
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                                <i class="fas fa-users"></i>
+                                المستخدمين
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}" href="{{ route('admin.bookings.index') }}">
+                                <i class="fas fa-calendar-check"></i>
+                                الحجوزات
+                            </a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.services.index') }}">
+                                <i class="fas fa-concierge-bell"></i>
+                                جميع الخدمات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.spareparts.index') }}">
+                                <i class="fas fa-cogs"></i>
+                                قطع الغيار
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.services.index') }}?type=maintenance">
+                                <i class="fas fa-wrench"></i>
+                                الصيانة الدورية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.services.index') }}?type=help">
+                                <i class="fas fa-ambulance"></i>
+                                المساعدة الطارئة
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-10 main-content">
-                @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @endif
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1e293b; color: #fff;">
+                    <div class="container-fluid">
+                        <a class="navbar-brand fw-bold" href="{{ route('admin.dashboard') }}" style="color: #38b6ff; font-size: 2rem; letter-spacing: 2px;">
+                        <i class="fas fa-charging-station"></i> <span>شاحني</span>
+                        </a>
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">{{ auth()->user()->name }}</span>
+                            <img src="{{ auth()->user()->avatar ?? asset('images/default-avatar.png') }}" alt="User Avatar" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                        </div>
+                    </div>
+                </nav>
 
-                @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @endif
-
-                @foreach($unreadNotifications as $notification)
-                    <div>{{ $notification->data['title'] ?? 'إشعار جديد' }}</div>
-                @endforeach
-
+                <!-- Page content -->
                 @yield('content')
-            </div>
+            </main>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
-    <script>
-        // تعريف دالة showAlert العامة
-        function showAlert(type, message) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-
-            Toast.fire({
-                icon: type === 'success' ? 'success' : 'error',
-                title: message
-            });
-        }
-    </script>
-    <script src="{{ asset('js/auth.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
 </body>
 </html> 

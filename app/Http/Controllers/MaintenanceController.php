@@ -15,14 +15,16 @@ class MaintenanceController extends Controller
     {
         // جلب جميع الخدمات (وربما تصنيفها حسب النوع: كهربائية/ميكانيكية)
         // يمكنك جلبها كلها هنا وتصنيفها في الـ view أو JavaScript
-        $services = Service::all();
+        $electricalServices = Service::with('providers')->where('type', 'electrical')->get();
+        $mechanicalServices = Service::with('providers')->where('type', 'mechanical')->get();
 
         // يمكنك أيضاً جلب مقدمي الخدمة هنا إذا كنت ستمررهم كلهم للـ view
         // $serviceProviders = ServiceProvider::all();
 
         // تمرير البيانات إلى الـ view 'maintenance.blade.php'
         return view('maintenance', [
-            'services' => $services,
+            'electricalServices' => $electricalServices,
+            'mechanicalServices' => $mechanicalServices,
             // 'serviceProviders' => $serviceProviders, // إذا مررتهم كلهم
         ]);
     }

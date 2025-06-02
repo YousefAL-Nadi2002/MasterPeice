@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('charger_type');
             $table->text('notes')->nullable();
             $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
+            $table->decimal('total_price', 8, 2)->nullable();
             $table->timestamps();
         });
     }

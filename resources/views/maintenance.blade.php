@@ -447,159 +447,37 @@
 
             let currentServiceType = null; // To keep track of the currently displayed service type list
 
-            // --- Dummy Service Data (Replace with data from backend) ---
-            // Added 'id' and 'providers' array to each service
-            const dummyServicesData = {
-                electrical: [
-                    {
-                        id: 'electrical-battery-check',
-                        name: 'فحص وتشخيص أنظمة البطارية',
-                        description: 'فحص شامل لحالة خلايا البطارية، أنظمة الإدارة (BMS)، وتوازن الخلايا.',
-                        providers: [
-                            { name: 'مركز البطاريات المتخصص', phone: '0791112222', whatsapp: '0791112222', email: 'battery.center@example.com', location: 'عمان - شارع الصناعة' },
-                            { name: 'ورشة EV Care', phone: '0773334444', whatsapp: '0773334444', email: 'evcare@example.com', location: 'اربد - المنطقة الحرفية' },
-                            { name: 'صيانة المركبات الكهربائية المتقدمة', phone: '0781234567', whatsapp: '0781234567', email: 'advanced.ev@example.com', location: 'الزرقاء - شارع 36' }
-                        ]
-                    },
-                    {
-                        id: 'electrical-charging-systems',
-                        name: 'صيانة وإصلاح أنظمة الشحن',
-                        description: 'تشخيص مشاكل الشحن، صيانة منفذ الشحن، وإصلاح الشواحن الداخلية (OBC).',
-                        providers: [
-                             { name: 'خبراء الشحن السريع', phone: '0785556666', whatsapp: '0785556666', email: 'charging.experts@example.com', location: 'الزرقاء - الأوتوستراد' },
-                             { name: 'مركز البطاريات المتخصص', phone: '0791112222', whatsapp: '0791112222', email: 'battery.center@example.com', location: 'عمان - شارع الصناعة' }
-                        ]
-                    },
-                    {
-                        id: 'electrical-motor-check',
-                        name: 'فحص وصيانة المحرك الكهربائي',
-                        description: 'فحص كفاءة المحرك، أنظمة التحكم، والموصلات الكهربائية.',
-                        providers: [
-                             { name: 'ورشة EV Care', phone: '0773334444', whatsapp: '0773334444', email: 'evcare@example.com', location: 'اربد - المنطقة الحرفية' },
-                             { name: 'مركز الصيانة الشامل', phone: '0792223333', whatsapp: '0792223333', email: 'comprehensive.service@example.com', location: 'اربد - شارع حكما' }
-                        ]
-                    },
-                    {
-                        id: 'electrical-cooling-heating',
-                        name: 'صيانة أنظمة التبريد/التدفئة الكهربائية',
-                        description: 'فحص وإصلاح أنظمة التبريد والتدفئة التي تعتمد على الطاقة الكهربائية.',
-                        providers: [
-                             { name: 'صيانة المركبات الكهربائية المتقدمة', phone: '0781234567', whatsapp: '0781234567', email: 'advanced.ev@example.com', location: 'الزرقاء - شارع 36' }
-                        ]
-                    },
-                    {
-                        id: 'electrical-software-update',
-                        name: 'تحديث برمجيات السيارة',
-                        description: 'تحديث برمجيات وحدات التحكم المختلفة في السيارة لضمان الأداء الأمثل.',
-                        providers: [
-                             { name: 'مركز البرمجيات EV', phone: '0794445555', whatsapp: '0794445555', email: 'ev.software@example.com', location: 'عمان - شارع الجامعة الأردنية' }
-                        ]
-                    },
-                    {
-                        id: 'electrical-wiring-repair',
-                        name: 'إصلاح أعطال الأسلاك والوصلات الكهربائية',
-                        description: 'تشخيص وإصلاح مشاكل الدوائر الكهربائية والأسلاك في السيارة.',
-                        providers: [
-                             { name: 'ورشة EV Care', phone: '0773334444', whatsapp: '0773334444', email: 'evcare@example.com', location: 'اربد - المنطقة الحرفية' }
-                        ]
-                    },
-                     {
-                        id: 'electrical-safety-systems',
-                        name: 'فحص أنظمة الأمان الكهربائية',
-                        description: 'التأكد من عمل أنظمة الأمان المتعلقة بالجهد العالي بشكل صحيح.',
-                        providers: [
-                             { name: 'مركز البطاريات المتخصص', phone: '0791112222', whatsapp: '0791112222', email: 'battery.center@example.com', location: 'عمان - شارع الصناعة' },
-                             { name: 'صيانة المركبات الكهربائية المتقدمة', phone: '0781234567', whatsapp: '0781234567', email: 'advanced.ev@example.com', location: 'الزرقاء - شارع 36' }
-                        ]
-                    },
-                ],
-                mechanical: [
-                    {
-                        id: 'mechanical-suspension',
-                        name: 'صيانة أنظمة التعليق والتوجيه',
-                        description: 'فحص وإصلاح مكونات التعليق، نظام التوجيه، والمحاور.',
-                        providers: [
-                             { name: 'ورشة العجلات الذهبية', phone: '0770001111', whatsapp: '0770001111', email: 'golden.wheels@example.com', location: 'عمان - وادي السير' },
-                             { name: 'مركز الصيانة الشامل', phone: '0792223333', whatsapp: '0792223333', email: 'comprehensive.service@example.com', location: 'اربد - شارع حكما' }
-                        ]
-                    },
-                    {
-                        id: 'mechanical-brakes',
-                        name: 'صيانة أنظمة الفرامل',
-                        description: 'فحص أقراص الفرامل، الفحمات، سائل الفرامل، وأنظمة الفرملة المتجددة.',
-                        providers: [
-                             { name: 'ورشة العجلات الذهبية', phone: '0770001111', whatsapp: '0770001111', email: 'golden.wheels@example.com', location: 'عمان - وادي السير' },
-                             { name: 'مركز الفرامل المتخصص', phone: '0796667777', whatsapp: '0796667777', email: 'brake.specialist@example.com', location: 'الكرك - وسط المدينة' }
-                        ]
-                    },
-                    {
-                        id: 'mechanical-cooling-traditional',
-                        name: 'صيانة أنظمة التبريد التقليدية (إن وجدت)',
-                        description: 'فحص وإصلاح نظام تبريد المحرك أو المكونات الأخرى التي تحتاج تبريداً تقليدياً.',
-                        providers: [
-                             { name: 'مركز التبريد والتدفئة', phone: '0787778888', whatsapp: '0787778888', email: 'cooling.heating@example.com', location: 'مأدبا - شارع الجامعة' }
-                        ]
-                    },
-                    {
-                        id: 'mechanical-transmission',
-                        name: 'صيانة ناقل الحركة (الجير)',
-                        description: 'فحص وصيانة ناقل الحركة في السيارات الكهربائية (إن وجد).',
-                        providers: [
-                             { name: 'مركز الجير الأوتوماتيكي', phone: '0779990000', whatsapp: '0779990000', email: 'gear.center@example.com', location: 'عمان - شارع المطار' }
-                        ]
-                    },
-                    {
-                        id: 'mechanical-tires',
-                        name: 'استبدال الإطارات والموازنة',
-                        description: 'خدمات الإطارات الأساسية.',
-                        providers: [
-                             { name: 'مركز الإطارات السريع', phone: '0791011213', whatsapp: '0791011213', email: 'tire.center@example.com', location: 'اربد - شارع فلسطين' }
-                        ]
-                    },
-                    {
-                        id: 'mechanical-general-check',
-                        name: 'فحص عام للمكونات الميكانيكية',
-                        description: 'فحص دوري لأجزاء السيارة الميكانيكية للتأكد من سلامتها.',
-                        providers: [
-                             { name: 'مركز الصيانة الشامل', phone: '0792223333', whatsapp: '0792223333', email: 'comprehensive.service@example.com', location: 'اربد - شارع حكما' },
-                             { name: 'ورشة العجلات الذهبية', phone: '0770001111', whatsapp: '0770001111', email: 'golden.wheels@example.com', location: 'عمان - وادي السير' }
-                        ]
-                    },
-                ]
-            };
-            // --- End of Dummy Service Data ---
+            // جلب الخدمات من الباك اند
+            const electricalServices = @json($electricalServices);
+            const mechanicalServices = @json($mechanicalServices);
 
             // Function to render services in a list
             function renderServices(serviceType, services) {
                 const listElement = serviceType === 'electrical' ? electricalServicesList : mechanicalServicesList;
-                listElement.innerHTML = `<h3>خدمات الصيانة ${serviceType === 'electrical' ? 'الكهربائية' : 'الميكانيكية'}</h3>`; // Set title
-
+                listElement.innerHTML = `<h3>خدمات الصيانة ${serviceType === 'electrical' ? 'الكهربائية' : 'الميكانيكية'}</h3>`;
                 if (services.length === 0) {
                     listElement.innerHTML += '<p style="text-align: center; color: #555;">لا توجد خدمات متاحة حالياً في هذه الفئة.</p>';
                     return;
                 }
-
                 services.forEach(service => {
                     const serviceItem = document.createElement('div');
                     serviceItem.classList.add('service-item');
-                    serviceItem.dataset.serviceId = service.id; // Store service ID
-                    serviceItem.dataset.serviceType = serviceType; // Store service type
+                    serviceItem.dataset.serviceId = service.id;
+                    serviceItem.dataset.serviceType = serviceType;
                     serviceItem.innerHTML = `
                         <strong><i class="fas fa-check-circle"></i> ${service.name}</strong>
                         <p>${service.description}</p>
                     `;
                     listElement.appendChild(serviceItem);
                 });
-
-                 // Add click listeners to the newly rendered service items
-                 const serviceItems = listElement.querySelectorAll('.service-item');
-                 serviceItems.forEach(item => {
-                     item.addEventListener('click', function() {
-                         const serviceId = this.dataset.serviceId;
-                         const serviceType = this.dataset.serviceType;
-                         showProvidersList(serviceId, serviceType); // Show providers for this service
-                     });
-                 });
+                const serviceItems = listElement.querySelectorAll('.service-item');
+                serviceItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const serviceId = this.dataset.serviceId;
+                        const serviceType = this.dataset.serviceType;
+                        showProvidersList(serviceId, serviceType);
+                    });
+                });
             }
 
             // Function to render providers for a specific service
@@ -629,87 +507,72 @@
 
             // Function to show a specific service list and hide others
             function showServiceList(serviceType) {
-                // Hide all lists first
                 electricalServicesList.style.display = 'none';
                 mechanicalServicesList.style.display = 'none';
-                providerListView.style.display = 'none'; // Also hide provider list
-
-                // Show the selected list
+                providerListView.style.display = 'none';
                 if (serviceType === 'electrical') {
                     electricalServicesList.style.display = 'block';
-                    renderServices('electrical', dummyServicesData.electrical); // Render electrical services
-                    currentServiceType = 'electrical'; // Update current service type
+                    renderServices('electrical', electricalServices);
+                    currentServiceType = 'electrical';
                 } else if (serviceType === 'mechanical') {
                     mechanicalServicesList.style.display = 'block';
-                    renderServices('mechanical', dummyServicesData.mechanical); // Render mechanical services
-                    currentServiceType = 'mechanical'; // Update current service type
+                    renderServices('mechanical', mechanicalServices);
+                    currentServiceType = 'mechanical';
                 }
-
-                 // Scroll to the displayed list
-                 const displayedList = document.querySelector('.service-list[style*="display: block"]');
-                 if (displayedList) {
-                     displayedList.scrollIntoView({ behavior: 'smooth' });
-                 }
+                const displayedList = document.querySelector('.service-list[style*="display: block"]');
+                if (displayedList) {
+                    displayedList.scrollIntoView({ behavior: 'smooth' });
+                }
             }
 
             // Function to show the provider list for a selected service
             function showProvidersList(serviceId, serviceType) {
-                 // Find the service data
-                 const service = dummyServicesData[serviceType].find(s => s.id === serviceId);
-
-                 if (service) {
-                     // Set the title of the provider list
-                     selectedServiceNameSpan.textContent = service.name;
-
-                     // Render the providers for this service
-                     renderProviders(service.providers);
-
-                     // Hide service lists and show provider list
-                     electricalServicesList.style.display = 'none';
-                     mechanicalServicesList.style.display = 'none';
-                     providerListView.style.display = 'block';
-
-                     // Scroll to the provider list
-                     providerListView.scrollIntoView({ behavior: 'smooth' });
-                 } else {
-                     console.error(`Service with ID ${serviceId} not found in type ${serviceType}.`);
-                     alert('تعذر العثور على تفاصيل الخدمة.');
-                 }
+                let service = null;
+                if (serviceType === 'electrical') {
+                    service = electricalServices.find(s => s.id == serviceId);
+                } else {
+                    service = mechanicalServices.find(s => s.id == serviceId);
+                }
+                if (service) {
+                    selectedServiceNameSpan.textContent = service.name;
+                    renderProviders(service.providers);
+                    if (serviceType === 'electrical') {
+                        electricalServicesList.style.display = 'none';
+                    } else {
+                        mechanicalServicesList.style.display = 'none';
+                    }
+                    providerListView.style.display = 'block';
+                    providerListView.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('تعذر العثور على تفاصيل الخدمة.');
+                }
             }
 
 
             // Add click listeners to the service type buttons
             serviceTypeButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const serviceType = this.dataset.serviceType; // Get the service type from data attribute
-                    showServiceList(serviceType); // Show the corresponding list
+                    const serviceType = this.dataset.serviceType;
+                    showServiceList(serviceType);
                 });
             });
 
             // Add click listener to the back button in the provider list
             backToServicesListButton.addEventListener('click', function() {
-                // Hide provider list and show the last viewed service list
                 providerListView.style.display = 'none';
-                 if (currentServiceType === 'electrical') {
-                     electricalServicesList.style.display = 'block';
-                     // No need to re-render services unless data changes
-                 } else if (currentServiceType === 'mechanical') {
-                     mechanicalServicesList.style.display = 'block';
-                     // No need to re-render services unless data changes
-                 }
-
-                 // Scroll back to the service list
-                 const displayedList = document.querySelector('.service-list[style*="display: block"]');
-                 if (displayedList) {
-                     displayedList.scrollIntoView({ behavior: 'smooth' });
-                 }
-
+                if (currentServiceType === 'electrical') {
+                    electricalServicesList.style.display = 'block';
+                } else if (currentServiceType === 'mechanical') {
+                    mechanicalServicesList.style.display = 'block';
+                }
+                const displayedList = document.querySelector('.service-list[style*="display: block"]');
+                if (displayedList) {
+                    displayedList.scrollIntoView({ behavior: 'smooth' });
+                }
             });
 
-
-            // Optional: Automatically show one list on page load (e.g., electrical)
-            // showServiceList('electrical'); // Uncomment this line if you want one list to show by default
-
+            // عند تحميل الصفحة، أظهر الخدمات الكهربائية افتراضياً
+            showServiceList('electrical');
         });
     </script>
 

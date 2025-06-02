@@ -30,8 +30,8 @@
             right: 0;
             bottom: 0;
             width: 250px;
-            background: #fff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            background: #1e293b !important;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             transition: all 0.3s ease;
         }
@@ -59,7 +59,7 @@
         }
 
         .nav-link {
-            color: #344767;
+            color:rgb(255, 255, 255);
             padding: 10px 15px;
             border-radius: 5px;
             transition: all 0.3s ease;
@@ -230,7 +230,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-                {{ config('app.name') }}
+            <i class="fas fa-charging-station"></i> <span>شاحني</span>
             </a>
         </div>
 

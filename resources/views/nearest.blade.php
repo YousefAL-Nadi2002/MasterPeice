@@ -219,122 +219,22 @@
             const stationInfo = document.getElementById('station-info'); // Get the info element
 
             // --- Dummy Charging Station Data (Expanded for Jordan) ---
-            // This data is for demonstration purposes only.
-            // In a real application, this data would come from your backend/API.
-            const dummyStations = [
-                // محطات وهمية في عمان
-                { latlng: [31.9761, 35.8489], name: 'محطة وهمية عمان - الرابية', address: 'شارع الرابية', info: 'متوفر 2 شاحن سريع' },
-                { latlng: [31.9605, 35.8783], name: 'محطة وهمية عمان - الدوار السابع', address: 'الدوار السابع', info: 'مفتوح 24 ساعة' },
-                { latlng: [31.9565, 35.9128], name: 'محطة وهمية عمان - العبدلي', address: 'بوليفارد العبدلي', info: 'معلومات عن المحطة' },
-                { latlng: [31.9800, 35.8800], name: 'محطة وهمية عمان - الجاردنز', address: 'شارع الجاردنز', info: 'قريب من المطاعم' },
-                { latlng: [32.0050, 35.8400], name: 'محطة وهمية عمان - خلدا', address: 'شارع وصفي التل', info: 'يتطلب تطبيق خاص' },
-                { latlng: [32.0300, 35.8600], name: 'محطة وهمية عمان - صويلح', address: 'قرب ميدان صويلح', info: 'شاحن بطيء فقط' },
-                { latlng: [31.8500, 35.8200], name: 'محطة وهمية عمان - مرج الحمام', address: 'شارع المطار', info: 'يوجد مقهى قريب' },
-                { latlng: [32.0600, 35.8900], name: 'محطة وهمية عمان - أبو نصير', address: 'شارع الأردن', info: 'جديدة' },
-                { latlng: [31.8800, 35.9500], name: 'محطة وهمية عمان - المقابلين', address: 'شارع الحرية', info: 'مزدحم أحياناً' },
-                { latlng: [32.0200, 35.9500], name: 'محطة وهمية عمان - طبربور', address: 'شارع الشهيد', info: 'قرب محطة وقود' },
+            // const dummyStations = [...];
+            const stations = @json($stations);
 
-                // محطات وهمية في اربد والمناطق الشمالية
-                { latlng: [32.55, 35.85], name: 'محطة وهمية اربد - وسط البلد', address: 'شارع الهاشمي', info: 'متوفر 3 شواحن' },
-                { latlng: [32.5350, 35.8650], name: 'محطة وهمية اربد - جامعة اليرموك', address: 'داخل حرم الجامعة', info: 'للطلاب والموظفين' },
-                { latlng: [32.5550, 35.8450], name: 'محطة وهمية اربد - شارع الجامعة', address: 'شارع الجامعة', info: 'قرب المطاعم' },
-                { latlng: [32.5530, 36.0070], name: 'محطة وهمية الرمثا', address: 'وسط الرمثا', info: 'شاحن سريع' },
-                { latlng: [32.4500, 35.7500], name: 'محطة وهمية المزار الشمالي', address: 'قرب المزار', info: 'هادئة' },
-                { latlng: [32.2733, 35.8928], name: 'محطة وهمية جرش', address: 'قرب آثار جرش', info: 'موقع سياحي' },
-                { latlng: [32.33, 35.75], name: 'محطة وهمية عجلون', address: 'قرب قلعة عجلون', info: 'إطلالة جميلة' },
+            console.log('Loaded stations data:', stations); // Debug 1: Log stations data
 
-                // محطات وهمية في الزرقاء والمناطق الشرقية
-                { latlng: [32.08, 36.09], name: 'محطة وهمية الزرقاء - وسط البلد', address: 'شارع الجيش', info: 'متوفر شاحن واحد' },
-                { latlng: [32.0500, 36.1200], name: 'محطة وهمية الزرقاء - الجديدة', address: 'الزرقاء الجديدة', info: 'قرب منطقة صناعية' },
-                { latlng: [32.35, 36.2], name: 'محطة وهمية المفرق', address: 'وسط المفرق', info: 'قرب الجامعة' },
-                { latlng: [31.8811, 36.8154], name: 'محطة وهمية الأزرق', address: 'واحة الأزرق', info: 'نقطة استراحة' },
-                { latlng: [32.1667, 37.8167], name: 'محطة وهمية الصفاوي', address: 'طريق الصفاوي', info: 'على الطريق الدولي' },
+            // رسم المحطات الحقيقية على الخريطة
+            stations.forEach(station => {
+                if (station.latitude && station.longitude) {
+                    // Construct the link using JavaScript
+                    // const stationDetailsUrl = '/stations/' + station.id; // Removed this variable
+                    L.marker([station.latitude, station.longitude])
+                        .addTo(map)
+                        .bindPopup(`<b>${station.name}</b><br>${station.location ?? ''}<br><a href="/stations/${station.id}">تفاصيل المحطة</a>`); // Construct URL directly in the string
+                }
+            });
 
-                // محطات وهمية في العقبة والمناطق الجنوبية
-                { latlng: [29.53, 35.00], name: 'محطة وهمية العقبة - وسط المدينة', address: 'شارع الشاطئ', info: 'قرب الفنادق' },
-                { latlng: [29.5500, 35.0200], name: 'محطة وهمية العقبة - المنطقة الاقتصادية', address: 'المنطقة الاقتصادية الخاصة', info: 'للمركبات التجارية' },
-                { latlng: [29.8458, 35.4322], name: 'محطة وهمية القويرة', address: 'مثلث القويرة', info: 'على الطريق الصحراوي' },
-                { latlng: [29.1769, 35.9472], name: 'محطة وهمية المدورة', address: 'قرب الحدود السعودية', info: 'نقطة عبور' },
-                { latlng: [30.1956, 35.7375], name: 'محطة وهمية معان', address: 'وسط معان', info: 'متوفر شاحنان' },
-                { latlng: [30.3285, 35.4444], name: 'محطة وهمية البتراء', address: 'قرب مركز الزوار', info: 'موقع سياحي رئيسي' },
-                { latlng: [29.5744, 35.4106], name: 'محطة وهمية وادي رم', address: 'قرية رم', info: 'للزوار' },
-                { latlng: [30.5769, 35.5411], name: 'محطة وهمية الشوبك', address: 'قرب قلعة الشوبك', info: 'على الطريق' },
-                { latlng: [30.3586, 36.1164], name: 'محطة وهمية الجفر', address: 'قرب الجفر', info: 'منطقة صحراوية' },
-
-                // محطات وهمية في المناطق الوسطى الأخرى
-                { latlng: [31.18, 35.70], name: 'محطة وهمية الكرك - وسط المدينة', address: 'وسط الكرك', info: 'قرب القلعة' },
-                { latlng: [31.1200, 35.7400], name: 'محطة وهمية الكرك - جامعة مؤتة', address: 'داخل الجامعة', info: 'للطلاب والموظفين' },
-                { latlng: [32.0387, 35.7285], name: 'محطة وهمية السلط', address: 'وسط السلط', info: 'مدينة تاريخية' },
-                { latlng: [31.72, 35.79], name: 'محطة وهمية مأدبا', address: 'وسط مأدبا', info: 'قرب الكنائس' },
-                { latlng: [30.8333, 35.6000], name: 'محطة وهمية الطفيلة', address: 'وسط الطفيلة', info: 'متوفر شاحن واحد' },
-                { latlng: [32.1966, 35.6055], name: 'محطة وهمية دير علا', address: 'وادي الأردن', info: 'منطقة زراعية' },
-                { latlng: [32.45, 36.1833], name: 'محطة وهمية صبحا وصبحية', address: 'شمال شرق المفرق', info: 'منطقة حدودية' },
-                { latlng: [32.1333, 36.3833], name: 'محطة وهمية أم الجمال', address: 'قرب أم الجمال', info: 'آثار رومانية' },
-                { latlng: [31.7833, 36.1667], name: 'محطة وهمية الموقر', address: 'قرب الموقر', info: 'طريق صحراوي' },
-                { latlng: [31.8667, 35.8333], name: 'محطة وهمية ناعور', address: 'لواء ناعور', info: 'منطقة سكنية' },
-                { latlng: [31.9333, 35.8167], name: 'محطة وهمية وادي السير', address: 'لواء وادي السير', info: 'قرب المتحف' },
-                { latlng: [31.9000, 35.9667], name: 'محطة وهمية القويسمة', address: 'لواء القويسمة', info: 'منطقة صناعية' },
-                { latlng: [31.9667, 36.0000], name: 'محطة وهمية ماركا', address: 'لواء ماركا', info: 'قرب المطار المدني' },
-                { latlng: [31.6167, 35.9833], name: 'محطة وهمية الجيزة', address: 'لواء الجيزة', info: 'قرب مطار الملكة علياء' },
-                { latlng: [31.8333, 36.0667], name: 'محطة وهمية سحاب', address: 'لواء سحاب', info: 'منطقة صناعية رئيسية' },
-      { latlng: [31.9761, 35.8489], name: 'محطة وهمية عمان - الرابية', address: 'شارع الرابية', info: 'متوفر 2 شاحن سريع' },
-                { latlng: [31.9605, 35.8783], name: 'محطة وهمية عمان - الدوار السابع', address: 'الدوار السابع', info: 'مفتوح 24 ساعة' },
-                { latlng: [31.9565, 35.9128], name: 'محطة وهمية عمان - العبدلي', address: 'بوليفارد العبدلي', info: 'معلومات عن المحطة' },
-                { latlng: [31.9800, 35.8800], name: 'محطة وهمية عمان - الجاردنز', address: 'شارع الجاردنز', info: 'قريب من المطاعم' },
-                { latlng: [32.0050, 35.8400], name: 'محطة وهمية عمان - خلدا', address: 'شارع وصفي التل', info: 'يتطلب تطبيق خاص' },
-                { latlng: [32.0300, 35.8600], name: 'محطة وهمية عمان - صويلح', address: 'قرب ميدان صويلح', info: 'شاحن بطيء فقط' },
-                { latlng: [31.8500, 35.8200], name: 'محطة وهمية عمان - مرج الحمام', address: 'شارع المطار', info: 'يوجد مقهى قريب' },
-                { latlng: [32.0600, 35.8900], name: 'محطة وهمية عمان - أبو نصير', address: 'شارع الأردن', info: 'جديدة' },
-                { latlng: [31.8800, 35.9500], name: 'محطة وهمية عمان - المقابلين', address: 'شارع الحرية', info: 'مزدحم أحياناً' },
-                { latlng: [32.0200, 35.9500], name: 'محطة وهمية عمان - طبربور', address: 'شارع الشهيد', info: 'قرب محطة وقود' },
-
-                // محطات وهمية في اربد والمناطق الشمالية
-                { latlng: [32.55, 35.85], name: 'محطة وهمية اربد - وسط البلد', address: 'شارع الهاشمي', info: 'متوفر 3 شواحن' },
-                { latlng: [32.5350, 35.8650], name: 'محطة وهمية اربد - جامعة اليرموك', address: 'داخل حرم الجامعة', info: 'للطلاب والموظفين' },
-                { latlng: [32.5550, 35.8450], name: 'محطة وهمية اربد - شارع الجامعة', address: 'شارع الجامعة', info: 'قرب المطاعم' },
-                { latlng: [32.5530, 36.0070], name: 'محطة وهمية الرمثا', address: 'وسط الرمثا', info: 'شاحن سريع' },
-                { latlng: [32.4500, 35.7500], name: 'محطة وهمية المزار الشمالي', address: 'قرب المزار', info: 'هادئة' },
-                { latlng: [32.2733, 35.8928], name: 'محطة وهمية جرش', address: 'قرب آثار جرش', info: 'موقع سياحي' },
-                { latlng: [32.33, 35.75], name: 'محطة وهمية عجلون', address: 'قرب قلعة عجلون', info: 'إطلالة جميلة' },
-
-                // محطات وهمية في الزرقاء والمناطق الشرقية
-                { latlng: [32.08, 36.09], name: 'محطة وهمية الزرقاء - وسط البلد', address: 'شارع الجيش', info: 'متوفر شاحن واحد' },
-                { latlng: [32.0500, 36.1200], name: 'محطة وهمية الزرقاء - الجديدة', address: 'الزرقاء الجديدة', info: 'قرب منطقة صناعية' },
-                { latlng: [32.35, 36.2], name: 'محطة وهمية المفرق', address: 'وسط المفرق', info: 'قرب الجامعة' },
-                { latlng: [31.8811, 36.8154], name: 'محطة وهمية الأزرق', address: 'واحة الأزرق', info: 'نقطة استراحة' },
-                { latlng: [32.1667, 37.8167], name: 'محطة وهمية الصفاوي', address: 'طريق الصفاوي', info: 'على الطريق الدولي' },
-
-                // محطات وهمية في العقبة والمناطق الجنوبية
-                { latlng: [29.53, 35.00], name: 'محطة وهمية العقبة - وسط المدينة', address: 'شارع الشاطئ', info: 'قرب الفنادق' },
-                { latlng: [29.5500, 35.0200], name: 'محطة وهمية العقبة - المنطقة الاقتصادية', address: 'المنطقة الاقتصادية الخاصة', info: 'للمركبات التجارية' },
-                { latlng: [29.8458, 35.4322], name: 'محطة وهمية القويرة', address: 'مثلث القويرة', info: 'على الطريق الصحراوي' },
-                { latlng: [29.1769, 35.9472], name: 'محطة وهمية المدورة', address: 'قرب الحدود السعودية', info: 'نقطة عبور' },
-                { latlng: [30.1956, 35.7375], name: 'محطة وهمية معان', address: 'وسط معان', info: 'متوفر شاحنان' },
-                { latlng: [30.3285, 35.4444], name: 'محطة وهمية البتراء', address: 'قرب مركز الزوار', info: 'موقع سياحي رئيسي' },
-                { latlng: [29.5744, 35.4106], name: 'محطة وهمية وادي رم', address: 'قرية رم', info: 'للزوار' },
-                { latlng: [30.5769, 35.5411], name: 'محطة وهمية الشوبك', address: 'قرب قلعة الشوبك', info: 'على الطريق' },
-                { latlng: [30.3586, 36.1164], name: 'محطة وهمية الجفر', address: 'قرب الجفر', info: 'منطقة صحراوية' },
-
-                // محطات وهمية في المناطق الوسطى الأخرى
-                { latlng: [31.18, 35.70], name: 'محطة وهمية الكرك - وسط المدينة', address: 'وسط الكرك', info: 'قرب القلعة' },
-                { latlng: [31.1200, 35.7400], name: 'محطة وهمية الكرك - جامعة مؤتة', address: 'داخل الجامعة', info: 'للطلاب والموظفين' },
-                { latlng: [32.0387, 35.7285], name: 'محطة وهمية السلط', address: 'وسط السلط', info: 'مدينة تاريخية' },
-                { latlng: [31.72, 35.79], name: 'محطة وهمية مأدبا', address: 'وسط مأدبا', info: 'قرب الكنائس' },
-                { latlng: [30.8333, 35.6000], name: 'محطة وهمية الطفيلة', address: 'وسط الطفيلة', info: 'متوفر شاحن واحد' },
-                { latlng: [32.1966, 35.6055], name: 'محطة وهمية دير علا', address: 'وادي الأردن', info: 'منطقة زراعية' },
-                { latlng: [32.45, 36.1833], name: 'محطة وهمية صبحا وصبحية', address: 'شمال شرق المفرق', info: 'منطقة حدودية' },
-                { latlng: [32.1333, 36.3833], name: 'محطة وهمية أم الجمال', address: 'قرب أم الجمال', info: 'آثار رومانية' },
-                { latlng: [31.7833, 36.1667], name: 'محطة وهمية الموقر', address: 'قرب الموقر', info: 'طريق صحراوي' },
-                { latlng: [31.8667, 35.8333], name: 'محطة وهمية ناعور', address: 'لواء ناعور', info: 'منطقة سكنية' },
-                { latlng: [31.9333, 35.8167], name: 'محطة وهمية وادي السير', address: 'لواء وادي السير', info: 'قرب المتحف' },
-                { latlng: [31.9000, 35.9667], name: 'محطة وهمية القويسمة', address: 'لواء القويسمة', info: 'منطقة صناعية' },
-                { latlng: [31.9667, 36.0000], name: 'محطة وهمية ماركا', address: 'لواء ماركا', info: 'قرب المطار المدني' },
-                { latlng: [31.6167, 35.9833], name: 'محطة وهمية الجيزة', address: 'لواء الجيزة', info: 'قرب مطار الملكة علياء' },
-                { latlng: [31.8333, 36.0667], name: 'محطة وهمية سحاب', address: 'لواء سحاب', info: 'منطقة صناعية رئيسية' },
-
-
-
-            ];
             let nearestStation = null;
             let minDistance = Infinity;
             let nearestStationData = null;
@@ -350,9 +250,9 @@
                     Math.cos(point1[0] * Math.PI / 180) * Math.cos(point2[0] * Math.PI / 180) * 
                     Math.sin(dLon/2) * Math.sin(dLon/2);
                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-                const distance = R * c * 1000; // التحويل إلى أمتار
-                
-                return distance;
+                // المسافة بالكيلومترات
+                const distance = R * c;
+                return distance; // Distance in kilometers
             }
             
             // دالة لرسم المسار على الطريق باستخدام خدمة OSRM
@@ -439,6 +339,8 @@
                         const userLng = position.coords.longitude;
                         const userLatLng = [userLat, userLng];
 
+                        console.log('User location obtained:', userLatLng); // Debug 2: Log user location
+
                         // Update status
                         locationStatus.textContent = 'تم تحديد موقعك.';
                         locationStatus.style.color = '#007bff'; // Change color on success
@@ -450,18 +352,22 @@
                         L.marker(userLatLng).addTo(map)
                             .bindPopup('<b>موقعك الحالي</b>').openPopup();
 
-                        // Add markers for dummy stations and find the nearest
-                        dummyStations.forEach(station => {
-                            const stationMarker = L.marker(station.latlng).addTo(map)
-                                .bindPopup(`<b>${station.name}</b><br>${station.address}<br>${station.info || ''}`); // Use dummy data in popup
+                        // Add markers for stations and find the nearest
+                        stations.forEach(station => {
+                            // استخدم الإحداثيات الصحيحة من بيانات الـ backend
+                            if (station.latitude && station.longitude) {
+                                const stationLatLng = [station.latitude, station.longitude];
+                                const stationMarker = L.marker(stationLatLng).addTo(map)
+                                    .bindPopup(`<b>${station.name}</b><br>${station.location ?? ''}<br><a href="/stations/${station.id}">تفاصيل المحطة</a>`);
 
-                            // استخدام الدالة الجديدة لحساب المسافة
-                            const distance = calculateDistance(userLatLng, station.latlng);
+                                // استخدام الدالة لحساب المسافة مع الإحداثيات الصحيحة
+                                const distance = calculateDistance(userLatLng, stationLatLng);
 
-                            if (distance < minDistance) {
-                                minDistance = distance;
-                                nearestStation = stationMarker;
-                                nearestStationData = station;
+                                if (distance < minDistance) {
+                                    minDistance = distance;
+                                    nearestStation = stationMarker;
+                                    nearestStationData = station;
+                                }
                             }
                         });
 
@@ -469,10 +375,10 @@
                         if (nearestStation && nearestStationData) {
                             // Update info panel
                             stationName.textContent = nearestStationData.name;
-                            stationAddress.textContent = nearestStationData.address;
-                            stationInfo.textContent = nearestStationData.info || 'لا توجد معلومات إضافية'; // Update info element
-                            // Convert distance from meters to kilometers and format
-                            stationDistance.textContent = (minDistance / 1000).toFixed(2);
+                            stationAddress.textContent = nearestStationData.location ?? ''; // استخدم location بدلاً من address إذا كان هذا هو الاسم
+                            // Convert distance to kilometers and format
+                            stationDistance.textContent = minDistance.toFixed(2);
+                            stationInfo.textContent = nearestStationData.description || 'لا توجد معلومات إضافية'; // استخدم description بدلاً من info إذا كان هذا هو الاسم
                             nearestStationDetails.style.display = 'block'; // Show the details panel
 
                             // Highlight the nearest station marker (e.g., change color)
@@ -484,19 +390,19 @@
                                 popupAnchor: [1, -34],
                                 shadowSize: [41, 41]
                             }));
-                             nearestStation.setPopupContent(`<b>${nearestStationData.name}</b><br>${nearestStationData.address}<br>${nearestStationData.info || ''}<br>الأقرب إليك`);
-
+                             // تحديث محتوى الـ popup للمحطة الأقرب
+                             nearestStation.setPopupContent(`<b>${nearestStationData.name}</b><br>${nearestStationData.location ?? ''}<br>الأقرب إليك`);
 
                              // رسم مسار على الطريق بدلاً من الخط الهوائي
-                             drawRouteOnRoad(userLatLng, nearestStation.getLatLng());
+                             drawRouteOnRoad(userLatLng, [nearestStationData.latitude, nearestStationData.longitude]);
+
                         } else {
-                             // If no stations found (in a real app, handle this case)
+                             // إذا لم يتم العثور على محطة قريبة (نظرياً لن يحدث مع البيانات المولدة)
                              nearestStationDetails.style.display = 'none';
-                             locationStatus.textContent += ' لم يتم العثور على محطات قريبة (بيانات وهمية).';
+                             locationStatus.textContent = 'تم تحديد موقعك، ولكن لم يتم العثور على محطات قريبة في نطاق البحث (قد تحتاج لضبط نطاق البحث أو إضافة المزيد من المحطات).';
                         }
 
-
-                        // --- End of Placeholder ---
+                        console.log('Nearest station found:', nearestStationData); // Debug 3: Log nearest station data
 
                     },
                     // Error callback

@@ -164,4 +164,27 @@ class AdminController extends Controller
         $user->update(['is_active' => !$user->is_active]);
         return response()->json(['success' => true]);
     }
+
+    public function editProfile()
+    {
+        $admin = auth()->user();
+        return view('admin.profile.edit', compact('admin'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $admin = auth()->user();
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $admin->id,
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+        if ($data['password']) {
+            $admin->password = bcrypt($data['password']);
+        }
+        $admin->name = $data['name'];
+        $admin->email = $data['email'];
+        $admin->save();
+        return redirect()->route('admin.dashboard')->with('success', 'تم تحديث البيانات بنجاح');
+    }
 }

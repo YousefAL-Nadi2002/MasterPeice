@@ -200,4 +200,10 @@ class Station extends Model
         $this->available_ports = max(0, $this->total_ports - $activeBookings);
         $this->save();
     }
+
+    public function getChargingTypesAttribute($value)
+    {
+        if (is_array($value)) return $value;
+        return $value ? json_decode($value, true) : [];
+    }
 }

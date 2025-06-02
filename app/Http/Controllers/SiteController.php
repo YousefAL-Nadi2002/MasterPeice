@@ -14,7 +14,8 @@ class SiteController extends Controller
     {
         $activeStations = Station::where('status', 'active')->count();
         $totalBookings = Booking::count();
-        return view('Home', compact('activeStations', 'totalBookings'));
+        $stations = Station::where('status', 'active')->get();
+        return view('Home', compact('activeStations', 'totalBookings', 'stations'));
     }
 
     // عرض صفحة الخريطة
@@ -55,6 +56,12 @@ class SiteController extends Controller
     {
         $stations = Station::where('status', 'active')->get();
         return view('stations', compact('stations'));
+    }
+
+    // عرض صفحة تفاصيل محطة واحدة
+    public function showStation(Station $station)
+    {
+        return view('stations', compact('station'));
     }
 
     // عرض صفحة حول الموقع

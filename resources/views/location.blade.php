@@ -175,7 +175,7 @@
                             <p><i class="fas fa-charging-station"></i> <span id="dest-station-name">اسم المحطة</span></p>
                             <p><i class="fas fa-map-marker-alt"></i> <span id="dest-station-address">العنوان</span></p>
                             <p><i class="fas fa-route"></i> المسافة من الوجهة: <span id="dest-station-distance">--</span> كم</p>
-                            <button class="service-button" style="margin-top: 15px;">حجز موعد في هذه المحطة <i class="fas fa-calendar-check"></i></button>
+                            <p id="dest-station-details-link" style="display: none;"><a href="#">تفاصيل المحطة</a></p>
                         </div>
                     </div>
                 </div>
@@ -292,297 +292,287 @@
             };
 
             // محطات الشحن الوهمية
-const dummyStations = [
-    // عمان
-    { latlng: [31.9761, 35.8489], name: 'محطة وهمية عمان - الرابية', address: 'شارع الرابية', info: 'متوفر 2 شاحن سريع' },
-    { latlng: [31.9605, 35.8783], name: 'محطة وهمية عمان - الدوار السابع', address: 'الدوار السابع', info: 'مفتوح 24 ساعة' },
-    { latlng: [31.9565, 35.9128], name: 'محطة وهمية عمان - العبدلي', address: 'بوليفارد العبدلي', info: 'شحن سريع' },
-    { latlng: [31.9800, 35.8800], name: 'محطة وهمية عمان - الجاردنز', address: 'شارع وصفي التل', info: 'متوفر 4 شواحن' },
-    { latlng: [32.0050, 35.8400], name: 'محطة وهمية عمان - خلدا', address: 'شارع خلدا الرئيسي', info: 'مفتوح من 8 صباحاً - 10 مساءً' },
+            const stations = @json($stations);
+            // رسم المحطات الحقيقية على الخريطة
+            stations.forEach(station => {
+                if (station.latitude && station.longitude) {
+                    L.marker([station.latitude, station.longitude])
+                        .addTo(map)
+                        .bindPopup(`<b>${station.name}</b><br>${station.location ?? ''}`);
+                }
+            });
 
-    // إربد
-    { latlng: [32.55, 35.85], name: 'محطة وهمية إربد 1', address: 'شارع الجامعة، إربد', info: 'متوفر 3 شواحن' },
-    { latlng: [32.56, 35.84], name: 'محطة وهمية إربد 2', address: 'شارع الهاشمي، إربد', info: 'مفتوح 24 ساعة' },
+            // متغيرات خاصة بحساب المسار
+            let markers = [];
+            let routeLine = null;
+            let stationMarkers = [];
 
-    // الزرقاء
-    { latlng: [32.08, 36.09], name: 'محطة وهمية الزرقاء 1', address: 'شارع الملك عبدالله، الزرقاء', info: 'شحن سريع' },
-    { latlng: [32.07, 36.10], name: 'محطة وهمية الزرقاء 2', address: 'الوسط التجاري، الزرقاء', info: 'متوفر 2 شاحن بطيء' },
-
-    // العقبة
-    { latlng: [29.53, 35.00], name: 'محطة وهمية العقبة 1', address: 'شارع الملك حسين، العقبة', info: 'مفتوح من 8 صباحاً - 12 ليلاً' },
-    { latlng: [29.52, 35.01], name: 'محطة وهمية العقبة 2', address: 'منطقة العقبة الاقتصادية', info: 'متوفر 5 شواحن' },
-
-    // المفرق
-    { latlng: [32.35, 36.2], name: 'محطة وهمية المفرق', address: 'الطريق الدولي، المفرق', info: 'شحن سريع' },
-
-    // جرش
-    { latlng: [32.2733, 35.8928], name: 'محطة وهمية جرش', address: 'بالقرب من الآثار، جرش', info: 'متوفر 2 شاحن' },
-
-    // مأدبا
-    { latlng: [31.72, 35.79], name: 'محطة وهمية مأدبا', address: 'وسط المدينة، مأدبا', info: 'مفتوح من 9 صباحاً - 9 مساءً' }
-];
-
-// متغيرات خاصة بحساب المسار
-let markers = [];
-let routeLine = null;
-let stationMarkers = [];
-
-// عند تغيير اختيار المحافظة لنقطة الانطلاق
-startGovernorateSelect.addEventListener('change', function() {
-    // إظهار/إخفاء مجموعة مناطق عمان حسب اختيار المستخدم
-    if (this.value === 'عمان') {
-        ammanAreaGroup.style.display = 'block';
-    } else {
-        ammanAreaGroup.style.display = 'none';
-        ammanAreaSelect.value = '';
-    }
-
-    // تحديث الخريطة لتظهر المحافظة المختارة
-    if (this.value && governorateCoordinates[this.value]) {
-        map.setView(governorateCoordinates[this.value], 10);
-    }
-});
-
-// عند تغيير اختيار محافظة الوجهة
-destinationGovernorateSelect.addEventListener('change', function() {
-    // إظهار/إخفاء مجموعة مناطق عمان للوجهة حسب اختيار المستخدم
-    if (this.value === 'عمان') {
-        destinationAmmanAreaGroup.style.display = 'block';
-    } else {
-        destinationAmmanAreaGroup.style.display = 'none';
-        destinationAmmanAreaSelect.value = '';
-    }
-
-    // تحديث الخريطة لتظهر محافظة الوجهة المختارة
-    if (this.value && governorateCoordinates[this.value]) {
-        map.setView(governorateCoordinates[this.value], 10);
-    }
-});
-
-// تحديد المنطقة في عمان لنقطة الانطلاق
-ammanAreaSelect.addEventListener('change', function() {
-    const startGov = startGovernorateSelect.value;
-    if (startGov === 'عمان' && this.value && ammanAreaCoordinates[this.value]) {
-        map.setView(ammanAreaCoordinates[this.value], 14);
-    } else if (startGov && governorateCoordinates[startGov]) {
-         map.setView(governorateCoordinates[startGov], 10);
-    }
-});
-
-
-// تحديد منطقة الوجهة في عمان
-destinationAmmanAreaSelect.addEventListener('change', function() {
-     const destGov = destinationGovernorateSelect.value;
-    if (destGov === 'عمان' && this.value && ammanAreaCoordinates[this.value]) {
-        map.setView(ammanAreaCoordinates[this.value], 14);
-    } else if (destGov && governorateCoordinates[destGov]) {
-        map.setView(governorateCoordinates[destGov], 10);
-    }
-});
-
-// تنظيف المؤشرات والمسار السابق على الخريطة
-function clearMap() {
-    // إزالة المؤشرات السابقة
-    markers.forEach(marker => {
-        map.removeLayer(marker);
-    });
-    markers = [];
-
-    // إزالة خط المسار السابق
-    if (routeLine) {
-        map.removeLayer(routeLine);
-        routeLine = null;
-    }
-
-    // إزالة مؤشرات المحطات
-    stationMarkers.forEach(marker => {
-        map.removeLayer(marker);
-    });
-    stationMarkers = [];
-}
-
-// إضافة محطات الشحن إلى الخريطة
-function addStationsToMap() {
-    // رمز المحطة
-    const stationIcon = L.icon({
-        iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-shadow.png',
-        shadowSize: [41, 41],
-        shadowAnchor: [12, 41]
-    });
-
-    // إضافة كل محطة إلى الخريطة
-    dummyStations.forEach(station => {
-        let marker = L.marker(station.latlng, { icon: stationIcon }).addTo(map);
-        marker.bindPopup(`
-            <strong>${station.name}</strong><br>
-            ${station.address}<br>
-            <span style="color: green;">${station.info}</span><br>
-            <button class="station-details-btn" style="margin-top: 10px; padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">تفاصيل المحطة</button>
-        `);
-
-        stationMarkers.push(marker);
-    });
-}
-
-// دالة لجلب المسار من OSRM ورسمه
-function fetchAndDrawRoute(startCoords, destCoords) {
-    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${destCoords[1]},${destCoords[0]}?overview=full&geometries=geojson`;
-
-    fetch(osrmUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (data.routes && data.routes.length > 0) {
-                const routeGeometry = data.routes[0].geometry;
-                const routeCoordinates = routeGeometry.coordinates.map(coord => [coord[1], coord[0]]); // OSRM returns [lon, lat], Leaflet uses [lat, lon]
-
-                // رسم خط المسار على الخريطة
-                routeLine = L.polyline(routeCoordinates, { color: 'blue' }).addTo(map);
-
-                // تكبير الخريطة لتشمل المسار الكامل
-                map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
-
-                // تحديث المسافة (من بيانات OSRM)
-                const distanceInMeters = data.routes[0].distance; // المسافة بالمتر
-                const distanceInKm = (distanceInMeters / 1000).toFixed(1);
-
-                routeDistance.innerHTML = `<strong>المسافة:</strong> ${distanceInKm} كم`;
-
-                 // حساب إمكانية الوصول بناءً على الشحن الحالي
-                // افتراض: السيارة يمكنها السفر 4 كم لكل 1% من الشحن
-                const currentCharge = parseInt(currentChargeInput.value) || 80; // القيمة الافتراضية 80%
-                const maxRange = currentCharge * 4; // المدى الأقصى بالكيلومترات
-                const canReach = maxRange >= parseFloat(distanceInKm);
-
-                if (canReach) {
-                    reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> <span style="color: green;">يمكنك الوصول إلى الوجهة بالشحن الحالي (${currentCharge}%)</span>`;
+            // عند تغيير اختيار المحافظة لنقطة الانطلاق
+            startGovernorateSelect.addEventListener('change', function() {
+                // إظهار/إخفاء مجموعة مناطق عمان حسب اختيار المستخدم
+                if (this.value === 'عمان') {
+                    ammanAreaGroup.style.display = 'block';
                 } else {
-                    reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> <span style="color: red;">لا يمكنك الوصول إلى الوجهة بالشحن الحالي. تحتاج إلى شحن إضافي ${Math.ceil((parseFloat(distanceInKm) - maxRange) / 4)}%</span>`;
+                    ammanAreaGroup.style.display = 'none';
+                    ammanAreaSelect.value = '';
                 }
 
-                 // السرعة الموصى بها (هذه تحتاج لمنطق أكثر تعقيدًا ويعتمد على بيانات السيارة والطقس والتضاريس، هنا مجرد تقدير مبسط)
-                const chargeAfterTrip = currentCharge - (parseFloat(distanceInKm) / 4);
-                let recommendedSpeedValue = 100; // السرعة القصوى الافتراضية
-
-                if (chargeAfterTrip < 50) {
-                    recommendedSpeedValue -= Math.floor((50 - chargeAfterTrip) / 10) * 5;
+                // تحديث الخريطة لتظهر المحافظة المختارة
+                if (this.value && governorateCoordinates[this.value]) {
+                    map.setView(governorateCoordinates[this.value], 10);
                 }
-                 recommendedSpeed.innerHTML = `<strong>السرعة الموصى بها:</strong> ${recommendedSpeedValue} كم/ساعة`;
+            });
+
+            // عند تغيير اختيار محافظة الوجهة
+            destinationGovernorateSelect.addEventListener('change', function() {
+                // إظهار/إخفاء مجموعة مناطق عمان للوجهة حسب اختيار المستخدم
+                if (this.value === 'عمان') {
+                    destinationAmmanAreaGroup.style.display = 'block';
+                } else {
+                    destinationAmmanAreaGroup.style.display = 'none';
+                    destinationAmmanAreaSelect.value = '';
+                }
+
+                // تحديث الخريطة لتظهر محافظة الوجهة المختارة
+                if (this.value && governorateCoordinates[this.value]) {
+                    map.setView(governorateCoordinates[this.value], 10);
+                }
+            });
+
+            // تحديد المنطقة في عمان لنقطة الانطلاق
+            ammanAreaSelect.addEventListener('change', function() {
+                const startGov = startGovernorateSelect.value;
+                if (startGov === 'عمان' && this.value && ammanAreaCoordinates[this.value]) {
+                    map.setView(ammanAreaCoordinates[this.value], 14);
+                } else if (startGov && governorateCoordinates[startGov]) {
+                     map.setView(governorateCoordinates[startGov], 10);
+                }
+            });
 
 
-            } else {
-                console.error('لم يتم العثور على مسار.');
-                routeDistance.innerHTML = `<strong>المسافة:</strong> تعذر حساب المسافة (لا يوجد مسار)`;
-                 reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> تعذر حساب إمكانية الوصول`;
-                 recommendedSpeed.innerHTML = `<strong>السرعة الموصى بها:</strong> تعذر الحساب`;
+            // تحديد منطقة الوجهة في عمان
+            destinationAmmanAreaSelect.addEventListener('change', function() {
+                 const destGov = destinationGovernorateSelect.value;
+                if (destGov === 'عمان' && this.value && ammanAreaCoordinates[this.value]) {
+                    map.setView(ammanAreaCoordinates[this.value], 14);
+                } else if (destGov && governorateCoordinates[destGov]) {
+                    map.setView(governorateCoordinates[destGov], 10);
+                }
+            });
+
+            // تنظيف المؤشرات والمسار السابق على الخريطة
+            function clearMap() {
+                // إزالة المؤشرات السابقة
+                markers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+                markers = [];
+
+                // إزالة خط المسار السابق
+                if (routeLine) {
+                    map.removeLayer(routeLine);
+                    routeLine = null;
+                }
+
+                // إزالة مؤشرات المحطات
+                stationMarkers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+                stationMarkers = [];
             }
-            resultsPanel.style.display = 'block';
-        })
-        .catch(error => {
-            console.error('خطأ في جلب المسار:', error);
-            routeDistance.innerHTML = `<strong>المسافة:</strong> خطأ في جلب المسار`;
-            reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> خطأ في الحساب`;
-            recommendedSpeed.innerHTML = `<strong>السرعة الموصى بها:</strong> خطأ في الحساب`;
-             resultsPanel.style.display = 'block';
+
+            // إضافة محطات الشحن إلى الخريطة
+            function addStationsToMap() {
+                // رمز المحطة
+                const stationIcon = L.icon({
+                    iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-shadow.png',
+                    shadowSize: [41, 41],
+                    shadowAnchor: [12, 41]
+                });
+
+                // إضافة كل محطة إلى الخريطة
+                stations.forEach(station => {
+                    if (station.latitude && station.longitude) {
+                        const stationMarker = L.marker([station.latitude, station.longitude], { icon: stationIcon }).addTo(map);
+                        // Construct the link using JavaScript
+                        const stationDetailsUrl = '/stations/' + station.id;
+                        stationMarker.bindPopup(`<b>${station.name}</b><br>${station.location ?? ''}<br><a href="${stationDetailsUrl}">تفاصيل المحطة</a>`); // Add link
+                        stationMarkers.push(stationMarker);
+                    }
+                });
+            }
+
+            // دالة لجلب المسار من OSRM ورسمه
+            function fetchAndDrawRoute(startCoords, destCoords) {
+                const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${destCoords[1]},${destCoords[0]}?overview=full&geometries=geojson`;
+
+                fetch(osrmUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.routes && data.routes.length > 0) {
+                            const routeGeometry = data.routes[0].geometry;
+                            const routeCoordinates = routeGeometry.coordinates.map(coord => [coord[1], coord[0]]); // OSRM returns [lon, lat], Leaflet uses [lat, lon]
+
+                            // رسم خط المسار على الخريطة
+                            routeLine = L.polyline(routeCoordinates, { color: 'blue' }).addTo(map);
+
+                            // تكبير الخريطة لتشمل المسار الكامل
+                            map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
+
+                            // تحديث المسافة (من بيانات OSRM)
+                            const distanceInMeters = data.routes[0].distance; // المسافة بالمتر
+                            const distanceInKm = (distanceInMeters / 1000).toFixed(1);
+
+                            routeDistance.innerHTML = `<strong>المسافة:</strong> ${distanceInKm} كم`;
+
+                             // حساب إمكانية الوصول بناءً على الشحن الحالي
+                            // افتراض: السيارة يمكنها السفر 4 كم لكل 1% من الشحن
+                            const currentCharge = parseInt(currentChargeInput.value) || 80; // القيمة الافتراضية 80%
+                            const maxRange = currentCharge * 4; // المدى الأقصى بالكيلومترات
+                            const canReach = maxRange >= parseFloat(distanceInKm);
+
+                            if (canReach) {
+                                reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> <span style="color: green;">يمكنك الوصول إلى الوجهة بالشحن الحالي (${currentCharge}%)</span>`;
+                            } else {
+                                reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> <span style="color: red;">لا يمكنك الوصول إلى الوجهة بالشحن الحالي. تحتاج إلى شحن إضافي ${Math.ceil((parseFloat(distanceInKm) - maxRange) / 4)}%</span>`;
+                            }
+
+                             // السرعة الموصى بها (هذه تحتاج لمنطق أكثر تعقيدًا ويعتمد على بيانات السيارة والطقس والتضاريس، هنا مجرد تقدير مبسط)
+                            const chargeAfterTrip = currentCharge - (parseFloat(distanceInKm) / 4);
+                            let recommendedSpeedValue = 100; // السرعة القصوى الافتراضية
+
+                            if (chargeAfterTrip < 50) {
+                                recommendedSpeedValue -= Math.floor((50 - chargeAfterTrip) / 10) * 5;
+                            }
+                             recommendedSpeed.innerHTML = `<strong>السرعة الموصى بها:</strong> ${recommendedSpeedValue} كم/ساعة`;
+
+
+                        } else {
+                            console.error('لم يتم العثور على مسار.');
+                            routeDistance.innerHTML = `<strong>المسافة:</strong> تعذر حساب المسافة (لا يوجد مسار)`;
+                             reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> تعذر حساب إمكانية الوصول`;
+                             recommendedSpeed.innerHTML = `<strong>السرعة الموصى بها:</strong> تعذر الحساب`;
+                        }
+                        resultsPanel.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('خطأ في جلب المسار:', error);
+                        routeDistance.innerHTML = `<strong>المسافة:</strong> خطأ في جلب المسار`;
+                        reachabilityResult.innerHTML = `<strong>إمكانية الوصول:</strong> خطأ في الحساب`;
+                        recommendedSpeed.innerHTML = `<strong>السرعة الموصى بها:</strong> خطأ في الحساب`;
+                         resultsPanel.style.display = 'block';
+                    });
+            }
+
+
+            // حساب المسار والمدى
+            calculateButton.addEventListener('click', function() {
+                // التحقق من صحة المدخلات
+                const startGov = startGovernorateSelect.value;
+                const startArea = ammanAreaSelect.value;
+                const destGov = destinationGovernorateSelect.value;
+                const destArea = destinationAmmanAreaSelect.value;
+
+
+                if (!startGov || !destGov) {
+                    alert('يرجى اختيار المحافظات لنقطة البداية والوجهة.');
+                    return;
+                }
+
+                // تنظيف الخريطة
+                clearMap();
+
+                // نقطة البداية
+                let startCoords;
+                if (startGov === 'عمان' && startArea) {
+                    startCoords = ammanAreaCoordinates[startArea];
+                } else {
+                    startCoords = governorateCoordinates[startGov];
+                }
+
+                // نقطة الوجهة
+                let destCoords;
+                if (destGov === 'عمان' && destArea) {
+                    destCoords = ammanAreaCoordinates[destArea];
+                } else {
+                    destCoords = governorateCoordinates[destGov];
+                }
+
+                // وضع المؤشرات
+                let startMarker = L.marker(startCoords).addTo(map);
+                startMarker.bindPopup(`<b>نقطة البداية</b><br>${startGov}${startArea ? ' - ' + startArea : ''}`).openPopup();
+                markers.push(startMarker);
+
+                let destMarker = L.marker(destCoords).addTo(map);
+                destMarker.bindPopup(`<b>الوجهة</b><br>${destGov}${destArea ? ' - ' + destArea : ''}`);
+                markers.push(destMarker);
+
+                // جلب ورسم المسار باستخدام OSRM
+                fetchAndDrawRoute(startCoords, destCoords);
+
+                // إضافة محطات الشحن إلى الخريطة
+                addStationsToMap();
+
+                // حساب أقرب محطة للوجهة (يبقى الحساب الجوي هنا، يمكن تحسينه باستخدام OSRM لاحقاً)
+                let nearestStation = null;
+                let minDistance = Infinity;
+
+                 function calculateDistance(coords1, coords2) {
+                    // صيغة هافرساين لحساب المسافة بين نقطتين على سطح الأرض
+                    const toRad = value => value * Math.PI / 180;
+                    const R = 6371; // نصف قطر الأرض بالكيلومترات
+                    const dLat = toRad(coords2[0] - coords1[0]);
+                    const dLon = toRad(coords2[1] - coords1[1]);
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                            Math.cos(toRad(coords1[0])) * Math.cos(toRad(coords2[0])) *
+                            Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    return (R * c).toFixed(1); // المسافة الهوائية بالكيلومترات
+                }
+
+
+                stations.forEach(station => {
+                    const distToDestination = calculateDistance([station.latitude, station.longitude], destCoords);
+                    if (parseFloat(distToDestination) < parseFloat(minDistance)) {
+                        minDistance = distToDestination;
+                        nearestStation = station;
+                    }
+                });
+
+                 // عرض أقرب محطة للوجهة
+                if (nearestStation) {
+                    nearestStationToDestinationDiv.style.display = 'block';
+                    destStationName.textContent = nearestStation.name;
+                    destStationAddress.textContent = nearestStation.location ?? '';
+                    destStationDistance.textContent = minDistance.toFixed(2);
+                    // Log nearest station data to console for debugging
+                    console.log('Nearest Station Data:', nearestStation);
+                    // Update the station details link
+                    const destStationDetailsLink = document.getElementById('dest-station-details-link');
+                    const stationDetailsUrl = '/stations/' + nearestStation.id;
+                    destStationDetailsLink.innerHTML = `<a href="${stationDetailsUrl}">تفاصيل المحطة</a>`;
+                    destStationDetailsLink.style.display = 'block';
+                } else {
+                     nearestStationToDestinationDiv.style.display = 'none';
+                    // Hide the station details link if no nearest station found
+                    const destStationDetailsLink = document.getElementById('dest-station-details-link');
+                    if (destStationDetailsLink) {
+                        destStationDetailsLink.style.display = 'none';
+                    }
+                }
+            });
+
+            // تحديث حجم الخريطة عند تغيير حجم الشاشة
+            window.addEventListener('resize', function() {
+                if (map) {
+                    map.invalidateSize();
+                }
+            });
         });
-}
-
-
-// حساب المسار والمدى
-calculateButton.addEventListener('click', function() {
-    // التحقق من صحة المدخلات
-    const startGov = startGovernorateSelect.value;
-    const startArea = ammanAreaSelect.value;
-    const destGov = destinationGovernorateSelect.value;
-    const destArea = destinationAmmanAreaSelect.value;
-
-
-    if (!startGov || !destGov) {
-        alert('يرجى اختيار المحافظات لنقطة البداية والوجهة.');
-        return;
-    }
-
-    // تنظيف الخريطة
-    clearMap();
-
-    // نقطة البداية
-    let startCoords;
-    if (startGov === 'عمان' && startArea) {
-        startCoords = ammanAreaCoordinates[startArea];
-    } else {
-        startCoords = governorateCoordinates[startGov];
-    }
-
-    // نقطة الوجهة
-    let destCoords;
-    if (destGov === 'عمان' && destArea) {
-        destCoords = ammanAreaCoordinates[destArea];
-    } else {
-        destCoords = governorateCoordinates[destGov];
-    }
-
-    // وضع المؤشرات
-    let startMarker = L.marker(startCoords).addTo(map);
-    startMarker.bindPopup(`<b>نقطة البداية</b><br>${startGov}${startArea ? ' - ' + startArea : ''}`).openPopup();
-    markers.push(startMarker);
-
-    let destMarker = L.marker(destCoords).addTo(map);
-    destMarker.bindPopup(`<b>الوجهة</b><br>${destGov}${destArea ? ' - ' + destArea : ''}`);
-    markers.push(destMarker);
-
-    // جلب ورسم المسار باستخدام OSRM
-    fetchAndDrawRoute(startCoords, destCoords);
-
-    // إضافة محطات الشحن إلى الخريطة
-    addStationsToMap();
-
-    // حساب أقرب محطة للوجهة (يبقى الحساب الجوي هنا، يمكن تحسينه باستخدام OSRM لاحقاً)
-    let nearestStation = null;
-    let minDistance = Infinity;
-
-     function calculateDistance(coords1, coords2) {
-        // صيغة هافرساين لحساب المسافة بين نقطتين على سطح الأرض
-        const toRad = value => value * Math.PI / 180;
-        const R = 6371; // نصف قطر الأرض بالكيلومترات
-        const dLat = toRad(coords2[0] - coords1[0]);
-        const dLon = toRad(coords2[1] - coords1[1]);
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(toRad(coords1[0])) * Math.cos(toRad(coords2[0])) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return (R * c).toFixed(1); // المسافة الهوائية بالكيلومترات
-    }
-
-
-    dummyStations.forEach(station => {
-        const distToDestination = calculateDistance(station.latlng, destCoords);
-        if (parseFloat(distToDestination) < parseFloat(minDistance)) {
-            minDistance = distToDestination;
-            nearestStation = station;
-        }
-    });
-
-     // عرض أقرب محطة للوجهة
-    if (nearestStation) {
-        nearestStationToDestinationDiv.style.display = 'block';
-        destStationName.textContent = nearestStation.name;
-        destStationAddress.textContent = nearestStation.address;
-        destStationDistance.textContent = minDistance;
-    } else {
-         nearestStationToDestinationDiv.style.display = 'none';
-    }
-});
-
-// تحديث حجم الخريطة عند تغيير حجم الشاشة
-window.addEventListener('resize', function() {
-    if (map) {
-        map.invalidateSize();
-    }
-});
-});
-</script>
+    </script>
 </body>
 </html>
